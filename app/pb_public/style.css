@@ -1,0 +1,37 @@
+[hidden] { display: none !important; }
+.app { min-height: 100vh; background: var(--zen-color-background-canvas-alt); color: var(--zen-color-content-neutral-strongest); }
+.wrap { width: min(44rem, 100% - 2rem); margin-inline: auto; }
+.mark { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--zen-light-brand-9), var(--zen-light-brand-11)); flex: none; }
+
+.auth { min-height: 100vh; display: grid; place-items: center; padding: 1rem; }
+.auth-card { width: min(26rem, 100%); }
+.auth-card .zen-card__content { display: grid; gap: var(--zen-spacing-gap-large, 24px); }
+.auth-heading { display: grid; gap: var(--zen-spacing-gap-xsmall, 8px); }
+.auth-heading h1, .auth-heading p { margin: 0; }
+.auth-card .zen-segmented { width: 100%; }
+.auth-card .zen-segmented__item { flex: 1; justify-content: center; }
+.stack { display: grid; gap: var(--zen-spacing-gap-medium, 16px); }
+.stack .zen-button { width: 100%; justify-content: center; }
+.error-slot:empty { display: none; }
+
+.topbar { background: var(--zen-color-background-container); border-bottom: 1px solid var(--zen-color-border-neutral-pale-default); }
+.topbar-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 4rem; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.account { display: flex; align-items: center; gap: var(--zen-spacing-gap-small, 12px); }
+
+.page { display: grid; gap: var(--zen-spacing-gap-large, 24px); padding-block: var(--zen-spacing-gap-xlarge, 32px); }
+.add { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: var(--zen-spacing-gap-small, 12px); }
+.filters { margin-block: var(--zen-spacing-gap-medium, 16px) var(--zen-spacing-gap-xsmall, 8px); }
+
+.tasks { list-style: none; margin: 0; padding: 0; }
+.task { display: flex; align-items: center; justify-content: space-between; gap: var(--zen-spacing-gap-small, 12px); padding-block: 10px; border-top: 1px solid var(--zen-color-border-neutral-pale-default); }
+.task .zen-checkbox { flex: 1; min-width: 0; cursor: pointer; }
+.task .zen-checkbox[data-checked="true"] .zen-checkbox__label { text-decoration: line-through; color: var(--zen-color-content-neutral-light); }
+.task .delete { opacity: 0.55; }
+.task:hover .delete, .task .delete:focus-visible { opacity: 1; }
+.task-empty { list-style: none; border-top: 1px solid var(--zen-color-border-neutral-pale-default); }
+
+@media (max-width: 40rem) {
+  #who { display: none; }
+  .task .delete { opacity: 1; }
+}
