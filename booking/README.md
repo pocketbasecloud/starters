@@ -16,6 +16,12 @@ database transaction.
 3. **Services**: edit `services` in the admin (length in minutes, price in
    cents, `0` shows as Free).
 
+## Templates
+
+The booking page is `pb_hooks/views/pages/book.html`, the staff page
+`pages/staff.html`, and the confirmation email
+`pb_hooks/views/emails/booking-confirmed.html`.
+
 ## Staff
 
 Add staff in the admin under `users`; there is no public sign-up. Staff sign in

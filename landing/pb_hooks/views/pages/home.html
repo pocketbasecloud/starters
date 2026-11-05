@@ -1,0 +1,84 @@
+{{define "content"}}
+<section class="hero" id="top">
+  <div class="wrap hero-inner">
+    <span class="zen-badge" data-size="medium" data-tone="accent" data-background="subtle"><span class="zen-badge__text zen-type-body-base-medium">Early access is open</span></span>
+    <h1 class="zen-text zen-heading zen-type-display-1" data-tone="strongest">Ship the thing your customers keep asking for</h1>
+    <p class="zen-text zen-type-body-extra-regular lead" data-tone="base">{{.pitch}}</p>
+    {{template "waitlist-form.html" .waitlist}}
+    {{if .proof}}<p class="proof zen-text zen-type-body-small-medium" data-tone="base"><span class="avatars" aria-hidden="true"><i></i><i></i><i></i></span>Join {{.proof}} people already on the list</p>{{end}}
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow zen-text zen-type-all-caps-s" data-tone="accent">Why it's different</span>
+      <h2 class="zen-text zen-heading zen-type-heading-1" data-tone="strongest">Everything you need, nothing you don't</h2>
+    </div>
+    <ul class="features">
+      <li class="zen-card feature" data-tone="shadow" data-spacing="large"><div class="zen-card__content">
+        <span class="feature-icon" aria-hidden="true">{{template "icon-lightning"}}</span>
+        <h3 class="zen-text zen-heading zen-type-heading-4" data-tone="strongest">Fast from day one</h3>
+        <p class="zen-text zen-type-body-base-regular" data-tone="base">Pages render on the server and arrive ready to read. No spinners, no layout jumps.</p>
+      </div></li>
+      <li class="zen-card feature" data-tone="shadow" data-spacing="large"><div class="zen-card__content">
+        <span class="feature-icon" aria-hidden="true">{{template "icon-shield"}}</span>
+        <h3 class="zen-text zen-heading zen-type-heading-4" data-tone="strongest">Private by default</h3>
+        <p class="zen-text zen-type-body-base-regular" data-tone="base">Sign-ups and messages are stored in your own PocketBase. Nobody else can read them.</p>
+      </div></li>
+      <li class="zen-card feature" data-tone="shadow" data-spacing="large"><div class="zen-card__content">
+        <span class="feature-icon" aria-hidden="true">{{template "icon-globe"}}</span>
+        <h3 class="zen-text zen-heading zen-type-heading-4" data-tone="strongest">Works everywhere</h3>
+        <p class="zen-text zen-type-body-base-regular" data-tone="base">Phones, tablets and wide screens get the same careful layout.</p>
+      </div></li>
+    </ul>
+  </div>
+</section>
+
+<section class="section section--alt">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow zen-text zen-type-all-caps-s" data-tone="accent">How it works</span>
+      <h2 class="zen-text zen-heading zen-type-heading-1" data-tone="strongest">Three steps to get started</h2>
+    </div>
+    <ol class="steps">
+      <li class="step"><span class="step-number zen-type-heading-4" aria-hidden="true">1</span><h3 class="zen-text zen-heading zen-type-heading-4" data-tone="strongest">Join the list</h3><p class="zen-text zen-type-body-base-regular" data-tone="base">Leave your email. It takes five seconds and you can leave any time.</p></li>
+      <li class="step"><span class="step-number zen-type-heading-4" aria-hidden="true">2</span><h3 class="zen-text zen-heading zen-type-heading-4" data-tone="strongest">Get early access</h3><p class="zen-text zen-type-body-base-regular" data-tone="base">We invite people in the order they joined, a few at a time.</p></li>
+      <li class="step"><span class="step-number zen-type-heading-4" aria-hidden="true">3</span><h3 class="zen-text zen-heading zen-type-heading-4" data-tone="strongest">Tell us what you think</h3><p class="zen-text zen-type-body-base-regular" data-tone="base">Early users shape what we build next.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="wrap narrow">
+    <div class="section-head">
+      <span class="eyebrow zen-text zen-type-all-caps-s" data-tone="accent">Questions</span>
+      <h2 class="zen-text zen-heading zen-type-heading-1" data-tone="strongest">Frequently asked</h2>
+    </div>
+    <div class="faq">
+      <details class="faq-item"><summary class="zen-type-body-extra-bold">When do you launch?</summary><p class="zen-text zen-type-body-base-regular" data-tone="base">We open the doors in small batches. Everyone on the waitlist hears from us first.</p></details>
+      <details class="faq-item"><summary class="zen-type-body-extra-bold">What does it cost?</summary><p class="zen-text zen-type-body-base-regular" data-tone="base">Early users get the first months free and a founding price after that.</p></details>
+      <details class="faq-item"><summary class="zen-type-body-extra-bold">What do you do with my email?</summary><p class="zen-text zen-type-body-base-regular" data-tone="base">We only use it to tell you about the launch. One click unsubscribes you.</p></details>
+      <details class="faq-item"><summary class="zen-type-body-extra-bold">Can I talk to the team?</summary><p class="zen-text zen-type-body-base-regular" data-tone="base">Yes. Use the contact form below and a real person replies.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" id="contact">
+  <div class="wrap narrow">
+    <div class="section-head">
+      <span class="eyebrow zen-text zen-type-all-caps-s" data-tone="accent">Contact</span>
+      <h2 class="zen-text zen-heading zen-type-heading-1" data-tone="strongest">Talk to the team</h2>
+      <p class="zen-text zen-type-body-base-regular" data-tone="base">Questions, partnerships or press. We reply within two working days.</p>
+    </div>
+    {{template "contact-form.html" .contact}}
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap cta-inner">
+    <h2 class="zen-text zen-heading zen-type-heading-1">Be first in line</h2>
+    <a class="zen-button" data-size="lg" data-appearance="main" data-level="secondary" data-variant="secondary" href="#top"><span class="zen-button__label zen-type-button-label-l">Join the waitlist</span></a>
+  </div>
+</section>
+{{end}}

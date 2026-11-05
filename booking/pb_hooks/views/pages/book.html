@@ -1,0 +1,99 @@
+{{define "head"}}<meta name="description" content="Pick a service and a time that suits you.">{{end}}
+
+{{define "content"}}
+<header class="topbar">
+  <div class="wrap topbar-row">
+    <a class="brand" href="/"><span class="mark" aria-hidden="true"></span><span class="zen-text zen-type-heading-4" data-tone="strongest">{{.site}}</span></a>
+  </div>
+</header>
+
+<main class="wrap booking-page">
+  <div class="intro">
+    <span class="zen-badge" data-size="medium" data-tone="accent" data-background="subtle"><span class="zen-badge__text zen-type-body-base-medium">Book online</span></span>
+    <h1 class="zen-text zen-heading zen-type-display-3" data-tone="strongest">Book a time with {{.site}}</h1>
+    <p class="zen-text zen-type-body-extra-regular" data-tone="base">Pick a service and a time that suits you. You'll get a confirmation by email right away.</p>
+    <ul class="facts">
+      <li class="zen-text zen-type-body-base-medium" data-tone="base">{{template "icon-calendar"}}Instant confirmation</li>
+      <li class="zen-text zen-type-body-base-medium" data-tone="base">{{template "icon-clock"}}Times shown in {{.zone}}</li>
+      <li class="zen-text zen-type-body-base-medium" data-tone="base">{{template "icon-mail"}}Reply to the email to reschedule</li>
+    </ul>
+  </div>
+
+  <div class="zen-card booking-card" data-tone="shadow" data-spacing="large" id="booking-panel"><div class="zen-card__content">
+    {{if .services}}
+    <form id="booking" class="booking-form" hx-post="/book" hx-target="#booking-panel" hx-swap="innerHTML">
+      <fieldset class="step">
+        <legend class="step-title"><span class="step-number zen-type-body-small-bold" aria-hidden="true">1</span><span class="zen-text zen-type-body-extra-bold" data-tone="strongest">Choose a service</span></legend>
+        <div class="services">
+          {{range $index, $service := .services}}
+          <label class="service">
+            <input type="radio" class="pick" name="service" value="{{$service.id}}" {{if eq $index 0}}checked{{end}}>
+            <span class="service-body">
+              <span class="service-row"><span class="zen-text zen-type-body-base-bold" data-tone="strongest">{{$service.name}}</span><span class="zen-text zen-type-body-base-medium" data-tone="strongest">{{$service.price}}</span></span>
+              <span class="service-meta zen-text zen-type-body-small-regular" data-tone="base">{{template "icon-clock"}}{{$service.minutes}} min</span>
+              {{if $service.description}}<span class="zen-text zen-type-body-small-regular" data-tone="light">{{$service.description}}</span>{{end}}
+            </span>
+          </label>
+          {{end}}
+        </div>
+      </fieldset>
+
+      <fieldset class="step">
+        <legend class="step-title"><span class="step-number zen-type-body-small-bold" aria-hidden="true">2</span><span class="zen-text zen-type-body-extra-bold" data-tone="strongest">Pick a day</span></legend>
+        <div class="days">
+          {{range .days}}
+          <label class="day">
+            <input type="radio" class="pick" name="date" value="{{.key}}" {{if .selected}}checked{{end}}>
+            <span><small class="zen-type-body-small-medium">{{.weekday}}</small><strong class="zen-type-heading-4">{{.date}}</strong><small class="zen-type-body-small-regular">{{.month}}</small></span>
+          </label>
+          {{end}}
+        </div>
+      </fieldset>
+
+      <fieldset class="step">
+        <legend class="step-title"><span class="step-number zen-type-body-small-bold" aria-hidden="true">3</span><span class="zen-text zen-type-body-extra-bold" data-tone="strongest">Pick a time</span></legend>
+        <div id="times" hx-get="/book/times" hx-target="this" hx-swap="innerHTML"
+          hx-trigger="change from:.pick, times-changed from:body" hx-include="[name=service],[name=date]" aria-live="polite">
+          {{template "times.html" .}}
+        </div>
+      </fieldset>
+
+      <fieldset class="step">
+        <legend class="step-title"><span class="step-number zen-type-body-small-bold" aria-hidden="true">4</span><span class="zen-text zen-type-body-extra-bold" data-tone="strongest">Your details</span></legend>
+        <div class="details">
+          <div class="pair">
+            <div class="zen-input-field" data-size="large" data-state="default">
+              <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="name">Name</label></span></span>
+              <div class="zen-input__control"><input id="name" class="zen-input__native zen-type-body-base-medium" name="name" autocomplete="name" maxlength="100" required></div>
+            </div>
+            <div class="zen-input-field" data-size="large" data-state="default">
+              <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="email">Email</label></span></span>
+              <div class="zen-input__control"><input id="email" class="zen-input__native zen-type-body-base-medium" name="email" type="email" autocomplete="email" maxlength="254" required></div>
+            </div>
+          </div>
+          <div class="zen-input-field" data-size="large" data-state="default">
+            <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="notes">Anything we should know? (optional)</label></span></span>
+            <div class="zen-input__control"><textarea id="notes" class="zen-input__native zen-input__native--textarea zen-type-body-base-medium" name="notes" rows="3" maxlength="1000"></textarea></div>
+          </div>
+          <div class="trap" aria-hidden="true"><label>Leave this empty <input name="website" tabindex="-1" autocomplete="off"></label></div>
+          <div id="booking-error"></div>
+          <button type="submit" class="zen-button confirm" data-size="lg" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__label zen-type-button-label-l">Confirm booking</span></button>
+        </div>
+      </fieldset>
+    </form>
+    {{else}}
+    <section class="zen-empty-state"><div class="zen-empty-state__body"><div class="zen-empty-state__content">
+      <h3 class="zen-empty-state__title zen-type-heading-4">Booking opens soon</h3>
+      <p class="zen-empty-state__caption zen-type-body-base-regular">Add a service in your PocketBase and tick <strong>active</strong>.</p>
+    </div></div></section>
+    {{end}}
+  </div></div>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-row">
+    <span class="zen-text zen-type-body-small-regular" data-tone="light">© {{.year}} {{.site}}</span>
+    <span class="zen-text zen-type-body-small-regular" data-tone="light">Powered by PocketBase</span>
+  </div>
+</footer>
+{{end}}

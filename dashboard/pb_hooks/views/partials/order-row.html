@@ -1,0 +1,14 @@
+<tr class="zen-table__row" id="order-{{.id}}">
+  <td class="zen-table__cell" data-align="left"><span class="zen-table-text"><span class="zen-table-text__label zen-type-body-base-regular">{{.customer}}</span><span class="zen-table-text__caption zen-type-caption-regular">{{.email}}</span></span></td>
+  <td class="zen-table__cell" data-align="left"><span class="zen-badge" data-size="medium" data-tone="{{.tone}}" data-background="subtle"><span class="zen-badge__text zen-type-body-base-medium">{{.label}}</span></span></td>
+  <td class="zen-table__cell hide-sm" data-align="left"><span class="zen-text zen-type-body-base-regular" data-tone="base">{{.date}}</span></td>
+  <td class="zen-table__cell amount" data-align="right">{{.total}}</td>
+  <td class="zen-table__cell" data-align="right">
+    <div class="zen-input-field compact" data-size="small" data-state="default"><div class="zen-input__control">
+      <select class="zen-input__native zen-type-body-small-medium" name="status" aria-label="Set status for {{.customer}}"
+        hx-patch="/app/orders/{{.id}}" hx-target="#order-{{.id}}" hx-swap="outerHTML">
+        {{range .statuses}}<option value="{{.value}}" {{if .selected}}selected{{end}}>{{.label}}</option>{{end}}
+      </select>
+    </div></div>
+  </td>
+</tr>

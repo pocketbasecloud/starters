@@ -25,5 +25,6 @@ dashboard. Products without a checkout link show "Not on sale yet".
 | File | What it does |
 | --- | --- |
 | `pb_hooks/store.pb.js` | Routes: `/`, `/shop/catalog`, `/products/{slug}`, `/thanks` |
-| `pb_hooks/views.js` | Templates, sorting and price formatting |
+| `pb_hooks/views.js` | Sorting, filters and price formatting |
+| `pb_hooks/views/` | Templates: `pages/home.html`, `pages/product.html`, `partials/catalog.html` |
 | `pb_public/style.css` | Layout and look |

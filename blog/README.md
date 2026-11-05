@@ -7,7 +7,7 @@ cover cards that loads more as you go, and post pages with reading time.
 
 1. **Name**: set *Application name* in PocketBase settings. The header, titles
    and footer use it.
-2. **Tagline**: `TAGLINE` at the top of `pb_hooks/views.js`.
+2. **Tagline**: `TAGLINE` at the top of `pb_hooks/views.js`; the page markup is in `pb_hooks/views/`.
 3. **Sample posts**: delete them in the admin under `posts`, then write your own.
 
 ## Writing
@@ -21,5 +21,6 @@ on the pages and in the API.
 | File | What it does |
 | --- | --- |
 | `pb_hooks/blog.pb.js` | Routes: `/`, `/blog/more`, `/posts/{slug}` |
-| `pb_hooks/views.js` | The HTML templates and page size |
+| `pb_hooks/views.js` | Post data and page size |
+| `pb_hooks/views/` | Templates: `pages/home.html`, `pages/post.html`, `partials/post-cards.html` |
 | `pb_public/style.css` | Layout and look |

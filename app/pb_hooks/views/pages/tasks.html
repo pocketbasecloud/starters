@@ -1,0 +1,80 @@
+{{define "content"}}
+<section id="welcome" class="auth" hidden>
+  <div class="zen-card auth-card" data-tone="shadow" data-spacing="large"><div class="zen-card__content">
+    <div class="auth-heading">
+      <span class="mark" aria-hidden="true"></span>
+      <h1 class="zen-text zen-heading zen-type-heading-2" data-tone="strongest">{{.site}}</h1>
+      <p class="zen-text zen-type-body-base-regular" data-tone="base">Keep track of what matters, on every device.</p>
+    </div>
+    <div class="zen-segmented" data-level="secondary" data-size="medium" role="group" aria-label="Account" data-name="auth">
+      <button type="button" class="zen-segmented__item" data-size="medium" data-state="default" data-value="signin" data-selected="true" aria-pressed="true"><span class="zen-segmented__label zen-type-body-base-bold">Sign in</span></button>
+      <button type="button" class="zen-segmented__item" data-size="medium" data-state="default" data-value="signup" data-selected="false" aria-pressed="false"><span class="zen-segmented__label zen-type-body-base-bold">Create account</span></button>
+    </div>
+    <form id="signin-form" class="stack" data-auth="signin">
+      <div class="zen-input-field" data-size="medium" data-state="default">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="signin-email">Email</label></span></span>
+        <div class="zen-input__control"><input id="signin-email" class="zen-input__native zen-type-body-base-medium" name="email" type="email" autocomplete="username" required></div>
+      </div>
+      <div class="zen-input-field" data-size="medium" data-state="default">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="signin-password">Password</label></span></span>
+        <div class="zen-input__control"><input id="signin-password" class="zen-input__native zen-type-body-base-medium" name="password" type="password" autocomplete="current-password" required></div>
+      </div>
+      <div class="error-slot"></div>
+      <button type="submit" class="zen-button" data-size="md" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__label zen-type-button-label-m">Sign in</span></button>
+    </form>
+    <form id="signup-form" class="stack" data-auth="signup" hidden>
+      <div class="zen-input-field" data-size="medium" data-state="default">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="signup-email">Email</label></span></span>
+        <div class="zen-input__control"><input id="signup-email" class="zen-input__native zen-type-body-base-medium" name="email" type="email" autocomplete="email" required></div>
+      </div>
+      <div class="zen-input-field" data-size="medium" data-state="default">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="signup-password">Password</label></span></span>
+        <div class="zen-input__control"><input id="signup-password" class="zen-input__native zen-type-body-base-medium" name="password" type="password" autocomplete="new-password" minlength="8" required></div>
+      </div>
+      <div class="error-slot"></div>
+      <button type="submit" class="zen-button" data-size="md" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__label zen-type-button-label-m">Create account</span></button>
+    </form>
+  </div></div>
+</section>
+
+<div id="workspace" hidden>
+  <header class="topbar">
+    <div class="wrap topbar-row">
+      <a class="brand" href="/"><span class="mark" aria-hidden="true"></span><span class="zen-text zen-type-heading-4" data-tone="strongest">{{.site}}</span></a>
+      <div class="account">
+        <span id="who" class="zen-text zen-type-body-small-regular" data-tone="base"></span>
+        <button id="signout" type="button" class="zen-button" data-size="sm" data-appearance="main" data-level="secondary" data-variant="secondary"><span class="zen-button__icon" aria-hidden="true">{{template "icon-log-out"}}</span><span class="zen-button__label zen-type-button-label-s">Sign out</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap page">
+    <header class="zen-page-header">
+      <div class="zen-page-header__row"><div class="zen-page-header__titles"><h1 class="zen-text zen-heading zen-type-heading-1" data-tone="strongest">My tasks</h1></div></div>
+      <p class="zen-text zen-type-body-base-regular zen-page-header__description" data-tone="base" id="summary" hx-get="/app/summary" hx-trigger="signed-in from:body, tasks-changed from:body">&nbsp;</p>
+    </header>
+
+    <div class="error-slot"></div>
+
+    <div class="zen-card" data-tone="shadow" data-spacing="medium"><div class="zen-card__content">
+      <form class="add" hx-post="/app/tasks" hx-swap="none" hx-on::after-request="if (event.detail.successful) this.reset()">
+        <div class="zen-input-field" data-size="medium" data-state="default">
+          <span class="zen-input-label zen-type-body-small-regular zen-visually-hidden" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="new-task">New task</label></span></span>
+          <div class="zen-input__control"><input id="new-task" class="zen-input__native zen-type-body-base-medium" name="title" placeholder="Add a task" maxlength="200" autocomplete="off" required></div>
+        </div>
+        <button type="submit" class="zen-button" data-size="md" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__icon" aria-hidden="true">{{template "icon-plus"}}</span><span class="zen-button__label zen-type-button-label-m">Add</span></button>
+      </form>
+      <form id="show" class="filters" onsubmit="return false">
+        <input type="hidden" id="show-value" name="show" value="all">
+        <div class="zen-segmented" data-level="secondary" data-size="medium" role="group" aria-label="Show tasks" data-name="show">
+          <button type="button" class="zen-segmented__item" data-size="medium" data-state="default" data-value="all" data-selected="true" aria-pressed="true"><span class="zen-segmented__label zen-type-body-base-bold">All</span></button>
+          <button type="button" class="zen-segmented__item" data-size="medium" data-state="default" data-value="open" data-selected="false" aria-pressed="false"><span class="zen-segmented__label zen-type-body-base-bold">Open</span></button>
+          <button type="button" class="zen-segmented__item" data-size="medium" data-state="default" data-value="done" data-selected="false" aria-pressed="false"><span class="zen-segmented__label zen-type-body-base-bold">Done</span></button>
+        </div>
+      </form>
+      <ul id="tasks" class="tasks" hx-get="/app/tasks" hx-include="#show" hx-disinherit="hx-include"
+        hx-trigger="signed-in from:body, change from:#show, tasks-changed from:body"></ul>
+    </div></div>
+  </main>
+</div>
+{{end}}

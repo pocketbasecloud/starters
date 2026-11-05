@@ -6,7 +6,8 @@ form. Sign-ups and messages land in your PocketBase.
 ## Change these first
 
 1. **Name**: set *Application name* in PocketBase settings.
-2. **Words**: `HEADLINE`, `PITCH`, `FEATURES`, `STEPS` and `FAQ` at the top of
+2. **Words**: the headline, features, steps and FAQ in
+   `pb_hooks/views/pages/home.html`; the one-line pitch is `PITCH` in
    `pb_hooks/views.js`.
 3. **Social proof**: "Join N people" shows once the list reaches
    `SOCIAL_PROOF_FROM` (25).

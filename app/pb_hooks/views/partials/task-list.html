@@ -1,0 +1,8 @@
+{{range .tasks}}{{template "task.html" .}}{{else}}
+<li class="task-empty">
+  <section class="zen-empty-state"><div class="zen-empty-state__body"><div class="zen-empty-state__content">
+    <h3 class="zen-empty-state__title zen-type-heading-4">{{.empty.title}}</h3>
+    <p class="zen-empty-state__caption zen-type-body-base-regular">{{.empty.caption}}</p>
+  </div></div></section>
+</li>
+{{end}}

@@ -1,0 +1,8 @@
+{{range .orders}}{{template "order-row.html" .}}{{else}}
+<tr class="zen-table__row"><td class="zen-table__cell" colspan="5">
+  <section class="zen-empty-state"><div class="zen-empty-state__body"><div class="zen-empty-state__content">
+    <h3 class="zen-empty-state__title zen-type-heading-4">No orders match</h3>
+    <p class="zen-empty-state__caption zen-type-body-base-regular">Try another status or search.</p>
+  </div></div></section>
+</td></tr>
+{{end}}

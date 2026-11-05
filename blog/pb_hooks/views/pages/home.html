@@ -1,0 +1,33 @@
+{{define "content"}}
+<section class="hero">
+  <div class="wrap hero-inner">
+    <span class="zen-badge" data-size="medium" data-tone="accent" data-background="subtle"><span class="zen-badge__text zen-type-body-base-medium">The blog</span></span>
+    <h1 class="zen-text zen-heading zen-type-display-2" data-tone="strongest">{{.site}}</h1>
+    <p class="zen-text zen-type-body-extra-regular" data-tone="base">{{.tagline}}</p>
+  </div>
+</section>
+<div class="wrap feed">
+  {{with .featured}}
+  <a class="zen-card featured" data-tone="shadow" data-interactive="true" href="/posts/{{.slug}}">
+    <div class="zen-card__content featured-inner">
+      <div class="cover cover--wide">{{template "cover.html" .}}</div>
+      <div class="featured-text">
+        <span class="eyebrow zen-text zen-type-all-caps-s" data-tone="accent">Latest</span>
+        <h2 class="zen-text zen-heading zen-type-heading-1" data-tone="strongest">{{.title}}</h2>
+        {{if .summary}}<p class="zen-text zen-type-body-extra-regular" data-tone="base">{{.summary}}</p>{{end}}
+        {{template "post-meta.html" .}}
+      </div>
+    </div>
+  </a>
+  {{if $.more.posts}}
+  <h2 class="section-title zen-text zen-heading zen-type-heading-3" data-tone="strongest">More posts</h2>
+  <ol class="grid" id="posts">{{template "post-cards.html" $.more}}</ol>
+  {{end}}
+  {{else}}
+  <section class="zen-empty-state"><div class="zen-empty-state__body"><div class="zen-empty-state__content">
+    <h3 class="zen-empty-state__title zen-type-heading-4">No posts yet</h3>
+    <p class="zen-empty-state__caption zen-type-body-base-regular">Publish your first post from your PocketBase.</p>
+  </div></div></section>
+  {{end}}
+</div>
+{{end}}

@@ -1,0 +1,12 @@
+{{define "content"}}
+<article class="article">
+  <header class="article-head wrap narrow">
+    <a href="/" class="zen-link back" data-tone="hyperlink" data-underline="hover">{{template "icon-arrow-left"}}<span>All posts</span></a>
+    <h1 class="zen-text zen-heading zen-type-display-2" data-tone="strongest">{{.post.title}}</h1>
+    {{if .post.summary}}<p class="lede zen-text zen-type-body-extra-regular" data-tone="base">{{.post.summary}}</p>{{end}}
+    {{template "post-meta.html" .post}}
+  </header>
+  {{if .post.coverLarge}}<figure class="article-cover wrap"><img src="{{.post.coverLarge}}" alt=""></figure>{{end}}
+  <div class="prose wrap narrow">{{raw .post.body}}</div>
+</article>
+{{end}}

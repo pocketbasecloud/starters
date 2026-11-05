@@ -1,0 +1,50 @@
+{{define "head"}}
+<meta name="robots" content="noindex">
+<script type="module" src="/staff.js"></script>
+{{end}}
+
+{{define "content"}}
+<template id="alert-icon">{{template "icon-alert"}}</template>
+
+<section id="signin" class="auth" hidden>
+  <div class="zen-card auth-card" data-tone="shadow" data-spacing="large"><div class="zen-card__content">
+    <div class="auth-heading">
+      <span class="mark" aria-hidden="true"></span>
+      <h1 class="zen-text zen-heading zen-type-heading-2" data-tone="strongest">Staff sign in</h1>
+      <p class="zen-text zen-type-body-base-regular" data-tone="base">Staff accounts are added by an admin in PocketBase.</p>
+    </div>
+    <form id="signin-form" class="stack">
+      <div class="zen-input-field" data-size="large" data-state="default">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="staff-email">Email</label></span></span>
+        <div class="zen-input__control"><input id="staff-email" class="zen-input__native zen-type-body-base-medium" name="email" type="email" autocomplete="username" required></div>
+      </div>
+      <div class="zen-input-field" data-size="large" data-state="default">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="staff-password">Password</label></span></span>
+        <div class="zen-input__control"><input id="staff-password" class="zen-input__native zen-type-body-base-medium" name="password" type="password" autocomplete="current-password" required></div>
+      </div>
+      <div class="error-slot"></div>
+      <button type="submit" class="zen-button" data-size="lg" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__label zen-type-button-label-l">Sign in</span></button>
+    </form>
+  </div></div>
+</section>
+
+<div id="workspace" hidden>
+  <header class="topbar">
+    <div class="wrap topbar-row">
+      <a class="brand" href="/staff"><span class="mark" aria-hidden="true"></span><span class="zen-text zen-type-heading-4" data-tone="strongest">{{.site}}</span></a>
+      <div class="account">
+        <span id="who" class="zen-text zen-type-body-small-regular" data-tone="base"></span>
+        <button id="signout" type="button" class="zen-button" data-size="sm" data-appearance="main" data-level="secondary" data-variant="secondary"><span class="zen-button__icon" aria-hidden="true">{{template "icon-log-out"}}</span><span class="zen-button__label zen-type-button-label-s">Sign out</span></button>
+      </div>
+    </div>
+  </header>
+  <main class="wrap staff-page">
+    <header class="zen-page-header">
+      <div class="zen-page-header__row"><div class="zen-page-header__titles"><h1 class="zen-text zen-heading zen-type-heading-1" data-tone="strongest">Schedule</h1></div></div>
+      <p class="zen-text zen-type-body-base-regular zen-page-header__description" data-tone="base">Confirmed bookings for the next {{.daysAhead}} days, in {{.zone}}.</p>
+    </header>
+    <div class="error-slot"></div>
+    <div id="schedule" hx-get="/staff/schedule" hx-trigger="signed-in from:body, bookings-changed from:body"></div>
+  </main>
+</div>
+{{end}}

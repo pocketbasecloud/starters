@@ -1,0 +1,12 @@
+<form class="join" id="join" hx-post="/waitlist" hx-swap="outerHTML">
+  <div class="join-row">
+    <div class="zen-input-field join-field" data-size="large" data-state="{{if .error}}error{{else}}default{{end}}">
+      <span class="zen-input-label zen-type-body-small-regular zen-visually-hidden" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="join-email">Email</label></span></span>
+      <div class="zen-input__control"><input id="join-email" class="zen-input__native zen-type-body-base-medium" name="email" type="email" placeholder="you@company.com" autocomplete="email" maxlength="254" value="{{.email}}" required></div>
+    </div>
+    <button type="submit" class="zen-button" data-size="lg" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__label zen-type-button-label-l">Join the waitlist</span><span class="zen-button__icon" aria-hidden="true">{{template "icon-arrow-right"}}</span></button>
+  </div>
+  <input type="hidden" name="source" value="{{.source}}">
+  {{template "honeypot.html"}}
+  {{if .error}}{{template "message.html" .error}}{{else}}<p class="zen-text zen-type-body-small-regular fineprint" data-tone="light">No spam. Unsubscribe with one click.</p>{{end}}
+</form>

@@ -1,0 +1,22 @@
+{{range .posts}}
+<li>
+  <a class="zen-card card" data-tone="shadow" data-interactive="true" href="/posts/{{.slug}}">
+    <div class="zen-card__content card-inner">
+      <div class="cover">{{template "cover.html" .}}</div>
+      <div class="card-text">
+        <h3 class="zen-text zen-heading zen-type-heading-4" data-tone="strongest">{{.title}}</h3>
+        {{if .summary}}<p class="zen-text zen-type-body-base-regular" data-tone="base">{{.summary}}</p>{{end}}
+        {{template "post-meta.html" .}}
+      </div>
+    </div>
+  </a>
+</li>
+{{end}}
+{{if .next}}
+<li class="more" id="more">
+  <button type="button" class="zen-button" data-size="md" data-appearance="main" data-level="secondary" data-variant="secondary"
+    hx-get="/blog/more?page={{.next}}" hx-target="#more" hx-swap="outerHTML">
+    <span class="zen-button__label zen-type-button-label-m">Load more posts</span>
+  </button>
+</li>
+{{end}}

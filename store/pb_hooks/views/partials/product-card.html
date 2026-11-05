@@ -1,0 +1,13 @@
+<li>
+  <a class="product-card" href="/products/{{.slug}}">
+    <span class="tile">
+      {{template "tile.html" .}}
+      {{if .featured}}<span class="zen-badge tile-badge" data-size="small" data-tone="inverse" data-background="solid"><span class="zen-badge__text zen-type-body-small-medium">Bestseller</span></span>{{end}}
+    </span>
+    <span class="product-meta">
+      <span class="zen-text zen-type-body-base-medium" data-tone="strongest">{{.name}}</span>
+      <span class="zen-text zen-type-body-base-regular" data-tone="base">{{.price}}</span>
+    </span>
+    {{if .summary}}<span class="zen-text zen-type-body-small-regular product-summary" data-tone="light">{{.summary}}</span>{{end}}
+  </a>
+</li>

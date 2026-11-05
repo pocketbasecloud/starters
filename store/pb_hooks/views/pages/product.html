@@ -1,0 +1,42 @@
+{{define "content"}}
+{{with .product}}
+<div class="wrap product">
+  <a href="/" class="zen-link back" data-tone="hyperlink" data-underline="hover">{{template "icon-arrow-left"}}<span>All products</span></a>
+  <div class="product-layout">
+    <div class="gallery">
+      {{if .images}}
+        {{range $index, $image := .images}}<input type="radio" name="shot" id="shot-{{$index}}" class="shot" {{if eq $index 0}}checked{{end}}>{{end}}
+        <div class="stage">{{range .images}}<img src="{{.large}}" alt="">{{end}}</div>
+        {{if gt (len .images) 1}}
+        <div class="thumbs">{{range $index, $image := .images}}<label for="shot-{{$index}}" class="thumb" aria-label="Show image {{$image.number}}"><img src="{{$image.small}}" alt=""></label>{{end}}</div>
+        {{end}}
+      {{else}}
+        <div class="stage">{{template "tile.html" .}}</div>
+      {{end}}
+    </div>
+    <div class="buy">
+      {{if .category}}<span class="eyebrow zen-text zen-type-all-caps-s" data-tone="accent">{{.category}}</span>{{end}}
+      <h1 class="zen-text zen-heading zen-type-heading-1" data-tone="strongest">{{.name}}</h1>
+      <p class="price zen-text zen-type-heading-3" data-tone="strongest">{{.price}}</p>
+      {{if .summary}}<p class="zen-text zen-type-body-extra-regular" data-tone="base">{{.summary}}</p>{{end}}
+      {{if .checkout}}
+      <a class="zen-button buy-button" data-size="lg" data-appearance="main" data-level="primary" data-variant="primary" href="{{.checkout}}" rel="noopener noreferrer"><span class="zen-button__label zen-type-button-label-l">Buy now</span><span class="zen-button__icon" aria-hidden="true">{{template "icon-arrow-right"}}</span></a>
+      {{else}}
+      <button type="button" class="zen-button buy-button" data-size="lg" data-appearance="main" data-level="secondary" data-variant="secondary" disabled><span class="zen-button__label zen-type-button-label-l">Not on sale yet</span></button>
+      {{end}}
+      <ul class="assurances">
+        <li class="zen-text zen-type-body-small-regular" data-tone="base">{{template "icon-shield"}}Checkout on Stripe. We never see your card.</li>
+        <li class="zen-text zen-type-body-small-regular" data-tone="base">{{template "icon-bag"}}Free returns within 30 days.</li>
+      </ul>
+      <div class="prose">{{raw .description}}</div>
+    </div>
+  </div>
+  {{if .related}}
+  <section class="related">
+    <h2 class="zen-text zen-heading zen-type-heading-3" data-tone="strongest">You may also like</h2>
+    <ul class="products">{{range .related}}{{template "product-card.html" .}}{{end}}</ul>
+  </section>
+  {{end}}
+</div>
+{{end}}
+{{end}}

@@ -1,0 +1,7 @@
+{{if .times}}
+<div class="times">
+  {{range .times}}<label class="time"><input type="radio" name="time" value="{{.value}}" required><span class="zen-type-body-base-medium">{{.label}}</span></label>{{end}}
+</div>
+{{else}}
+<p class="no-times zen-text zen-type-body-base-regular" data-tone="base">No times left on this day. Pick another day.</p>
+{{end}}

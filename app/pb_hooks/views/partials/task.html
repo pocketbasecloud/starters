@@ -1,0 +1,12 @@
+<li class="task" id="task-{{.id}}">
+  <label class="zen-checkbox" data-side="left" data-state="default" data-checked="{{.done}}" data-indeterminate="false">
+    <span class="zen-checkbox__row">
+      <span class="zen-checkbox__mark" aria-hidden="true"><span class="zen-checkbox__box">{{if .done}}{{template "icon-check-xs"}}{{end}}</span></span>
+      <span class="zen-checkbox__content"><span class="zen-checkbox__label zen-type-body-base-regular">{{.title}}</span></span>
+    </span>
+    <input type="checkbox" aria-label="Done: {{.title}}" {{if .done}}checked{{end}}
+      hx-patch="/app/tasks/{{.id}}" hx-target="#task-{{.id}}" hx-swap="outerHTML">
+  </label>
+  <button type="button" class="zen-button zen-button--icon-only delete" data-size="sm" data-appearance="flat" data-level="primary" data-variant="primary" aria-label="Delete {{.title}}"
+    hx-delete="/app/tasks/{{.id}}" hx-target="#task-{{.id}}" hx-swap="outerHTML"><span class="zen-button__icon" aria-hidden="true">{{template "icon-trash"}}</span></button>
+</li>

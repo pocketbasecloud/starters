@@ -6,7 +6,7 @@ const SAMPLES = [
     slug: "hello",
     summary: "Your blog runs inside PocketBase. Here is how the pieces fit together.",
     body:
-      "<p>Every post is a record in the <code>posts</code> collection, and every page is rendered by <code>pb_hooks/blog.pb.js</code> with PocketBase's built-in template engine. There is no separate server and no build step.</p>" +
+      "<p>Every post is a record in the <code>posts</code> collection, and every page is an HTML template in <code>pb_hooks/views/</code>, rendered by PocketBase's built-in template engine. There is no separate server and no build step.</p>" +
       "<h2>Publishing</h2><p>Add a record, write the body, tick <strong>published</strong> and it appears on the home page. Unticked posts stay private drafts: neither the pages nor the API show them.</p>" +
       "<h2>Covers</h2><p>Upload an image to a post's <strong>cover</strong> field and it becomes the card image on the home page.</p>",
   },

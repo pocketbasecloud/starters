@@ -18,10 +18,23 @@ system. There is no separate server, no Node and no build step.
 Each folder is one PocketBase:
 
 ```text
-pb_migrations/  collections, API rules and sample data
-pb_hooks/       routes (*.pb.js) and the HTML they render (views.js)
-pb_public/      styles, htmx and fonts
+pb_migrations/        collections, API rules and sample data
+pb_hooks/
+  *.pb.js             routes
+  views.js            reads data and picks the template
+  views/
+    layout.html       the page shell
+    pages/            one template per page
+    partials/         pieces shared by pages and htmx responses
+    icons.html        Zen icons (generated)
+pb_public/            styles, htmx and fonts
 ```
+
+Templates use PocketBase's built-in engine, Go's `html/template`: every value
+is escaped, `{{template "post-meta.html" .}}` includes a partial, and
+`{{template "icon-clock"}}` an icon. htmx is the `hx-` attributes in those
+templates; each `hx-get` or `hx-post` calls a route in `*.pb.js`, which renders
+a partial and sends back just that piece of HTML.
 
 ## Deploy
 
@@ -46,8 +59,9 @@ when you are ready.
 
 ## Change the look
 
-`pb_public/style.css` holds each starter's layout. `pb_public/zen.css` is the
-Zen component library: regenerate it rather than editing it.
+Edit the words and markup in `pb_hooks/views/`, the layout in
+`pb_public/style.css`. `pb_public/zen.css` and `pb_hooks/views/icons.html` are
+generated from the Zen design system: regenerate them rather than editing them.
 
 ## Security
 

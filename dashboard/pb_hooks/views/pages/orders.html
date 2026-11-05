@@ -1,0 +1,74 @@
+{{define "content"}}
+<section id="signin" class="auth" hidden>
+  <div class="zen-card auth-card" data-tone="shadow" data-spacing="large"><div class="zen-card__content">
+    <div class="auth-heading">
+      <span class="mark" aria-hidden="true"></span>
+      <h1 class="zen-text zen-heading zen-type-heading-2" data-tone="strongest">Sign in to {{.site}}</h1>
+      <p class="zen-text zen-type-body-base-regular" data-tone="base">Staff accounts are added by an admin in PocketBase.</p>
+    </div>
+    <form id="signin-form" class="stack">
+      <div class="zen-input-field" data-size="medium" data-state="default">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="email">Email</label></span></span>
+        <div class="zen-input__control"><input id="email" class="zen-input__native zen-type-body-base-medium" name="email" type="email" autocomplete="username" required></div>
+      </div>
+      <div class="zen-input-field" data-size="medium" data-state="default">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="password">Password</label></span></span>
+        <div class="zen-input__control"><input id="password" class="zen-input__native zen-type-body-base-medium" name="password" type="password" autocomplete="current-password" required></div>
+      </div>
+      <div class="error-slot"></div>
+      <button class="zen-button" data-size="md" data-appearance="main" data-level="primary" data-variant="primary" type="submit"><span class="zen-button__label zen-type-button-label-m">Sign in</span></button>
+    </form>
+  </div></div>
+</section>
+
+<div id="dashboard" hidden>
+  <header class="topbar">
+    <div class="wrap topbar-row">
+      <a class="brand" href="/"><span class="mark" aria-hidden="true"></span><span class="zen-text zen-type-heading-4" data-tone="strongest">{{.site}}</span></a>
+      <div class="account">
+        <span id="who" class="zen-text zen-type-body-small-regular" data-tone="base"></span>
+        <button id="signout" type="button" class="zen-button" data-size="sm" data-appearance="main" data-level="secondary" data-variant="secondary"><span class="zen-button__icon" aria-hidden="true">{{template "icon-log-out"}}</span><span class="zen-button__label zen-type-button-label-s">Sign out</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap page">
+    <header class="zen-page-header">
+      <div class="zen-page-header__row"><div class="zen-page-header__titles"><h1 class="zen-text zen-heading zen-type-heading-1" data-tone="strongest">Orders</h1></div></div>
+      <p class="zen-text zen-type-body-base-regular zen-page-header__description" data-tone="base">Track revenue and move orders through fulfilment.</p>
+    </header>
+
+    <div class="error-slot"></div>
+
+    <div class="metrics" hx-get="/app/stats" hx-trigger="signed-in from:body, orders-changed from:body"></div>
+
+    <div class="zen-card" data-tone="shadow" data-spacing="medium"><div class="zen-card__content">
+      <form id="filters" class="toolbar" onsubmit="return false">
+        <input type="hidden" id="status" name="status" value="">
+        <div class="zen-segmented" data-level="secondary" data-size="medium" role="group" aria-label="Filter by status">
+          {{range $index, $segment := .segments}}
+          <button type="button" class="zen-segmented__item" data-size="medium" data-state="default" data-value="{{$segment.value}}" data-selected="{{eq $index 0}}" aria-pressed="{{eq $index 0}}"><span class="zen-segmented__label zen-type-body-base-bold">{{$segment.label}}</span></button>
+          {{end}}
+        </div>
+        <div class="zen-input-field zen-search" data-size="medium" data-state="default">
+          <span class="zen-input-label zen-type-body-small-regular zen-visually-hidden" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="search">Search orders</label></span></span>
+          <div class="zen-input__control"><span class="zen-input__affordance zen-input__affordance--leading">{{template "icon-search-sm"}}</span><input id="search" class="zen-input__native zen-type-body-base-medium" name="q" type="search" placeholder="Search name or email" data-tone="default"></div>
+        </div>
+      </form>
+      <div class="zen-table">
+        <table class="zen-table__table" aria-label="Orders">
+          <thead><tr>
+            <th scope="col" class="zen-table__header" data-align="left"><span class="zen-table__head"><span class="zen-table__label zen-type-all-caps-s">Customer</span></span></th>
+            <th scope="col" class="zen-table__header" data-align="left"><span class="zen-table__head"><span class="zen-table__label zen-type-all-caps-s">Status</span></span></th>
+            <th scope="col" class="zen-table__header hide-sm" data-align="left"><span class="zen-table__head"><span class="zen-table__label zen-type-all-caps-s">Date</span></span></th>
+            <th scope="col" class="zen-table__header" data-align="right"><span class="zen-table__head"><span class="zen-table__label zen-type-all-caps-s">Amount</span></span></th>
+            <th scope="col" class="zen-table__header" data-align="right"><span class="zen-table__head"><span class="zen-table__label zen-type-all-caps-s">Update</span></span></th>
+          </tr></thead>
+          <tbody id="orders" hx-get="/app/orders" hx-include="#filters" hx-disinherit="hx-include"
+            hx-trigger="signed-in from:body, change from:#filters, input changed delay:300ms from:#search"></tbody>
+        </table>
+      </div>
+    </div></div>
+  </main>
+</div>
+{{end}}

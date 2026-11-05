@@ -1,0 +1,6 @@
+<div class="zen-inline-message" data-tone="{{.tone}}" role="{{if eq .tone "negative"}}alert{{else}}status{{end}}">
+  <div class="zen-inline-message__container">
+    <span class="zen-inline-message__icon" aria-hidden="true">{{if eq .tone "negative"}}{{template "icon-alert"}}{{else}}{{template "icon-check-circle"}}{{end}}</span>
+    <div class="zen-inline-message__content"><div class="zen-inline-message__text"><span class="zen-inline-message__caption zen-type-body-small-regular">{{.text}}</span></div></div>
+  </div>
+</div>

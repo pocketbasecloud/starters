@@ -15,5 +15,6 @@ Every task belongs to its owner; nobody can see or change anyone else's.
 | File | What it does |
 | --- | --- |
 | `pb_hooks/tasks.pb.js` | Routes; every `/app/*` route needs a signed-in user |
-| `pb_hooks/views.js` | Templates and the owner check |
+| `pb_hooks/views.js` | Task data and the owner check |
+| `pb_hooks/views/` | Templates: `pages/tasks.html`, `partials/task.html` |
 | `pb_public/app.js` | Sign-up and sign-in with the PocketBase SDK |

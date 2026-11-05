@@ -17,4 +17,5 @@ through a filterable, searchable orders table, changing status in place.
 | --- | --- |
 | `pb_hooks/dashboard.pb.js` | Routes; all `/app/*` routes need a staff token |
 | `pb_hooks/views.js` | Metrics, table rows and statuses |
+| `pb_hooks/views/` | Templates: `pages/orders.html`, `partials/stats.html`, `partials/order-row.html` |
 | `pb_public/app.js` | Sign-in with the PocketBase SDK and htmx auth headers |

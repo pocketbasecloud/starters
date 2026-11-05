@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.title}}</title>
+  <meta name="htmx-config" content='{"responseHandling":[{"code":"204","swap":false},{"code":"[23]..","swap":true},{"code":"422","swap":true},{"code":"[45]..","swap":false,"error":true}]}'>
+  <link rel="stylesheet" href="/zen.css">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/htmx.min.js"></script>
+  {{block "head" .}}{{end}}
+</head>
+<body>
+  <div class="zen-provider site" data-paint="true" data-component-theme="brand-s1">
+    {{block "content" .}}{{end}}
+  </div>
+</body>
+</html>

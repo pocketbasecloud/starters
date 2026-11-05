@@ -1,0 +1,21 @@
+<form class="zen-card contact-card" data-tone="shadow" data-spacing="large" id="contact-form" hx-post="/contact" hx-swap="outerHTML">
+  <div class="zen-card__content contact-form">
+    <div class="contact-row">
+      <div class="zen-input-field" data-size="large" data-state="{{if .errors.name}}error{{else}}default{{end}}">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="name">Name</label></span></span>
+        <div class="zen-input__control"><input id="name" class="zen-input__native zen-type-body-base-medium" name="name" autocomplete="name" maxlength="100" value="{{.name}}" required></div>
+      </div>
+      <div class="zen-input-field" data-size="large" data-state="{{if .errors.email}}error{{else}}default{{end}}">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="email">Email</label></span></span>
+        <div class="zen-input__control"><input id="email" class="zen-input__native zen-type-body-base-medium" name="email" type="email" autocomplete="email" maxlength="254" value="{{.email}}" required></div>
+      </div>
+    </div>
+    <div class="zen-input-field" data-size="large" data-state="{{if .errors.message}}error{{else}}default{{end}}">
+      <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="message">Message</label></span></span>
+      <div class="zen-input__control"><textarea id="message" class="zen-input__native zen-input__native--textarea zen-type-body-base-medium" name="message" rows="5" maxlength="5000" required>{{.message}}</textarea></div>
+    </div>
+    {{template "honeypot.html"}}
+    {{if .error}}{{template "message.html" .error}}{{end}}
+    <div><button type="submit" class="zen-button" data-size="lg" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__label zen-type-button-label-l">Send message</span></button></div>
+  </div>
+</form>

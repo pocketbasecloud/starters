@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.meta.title}}</title>
+  {{if .meta.description}}<meta name="description" content="{{.meta.description}}">{{end}}
+  <meta property="og:title" content="{{.meta.title}}">
+  {{if .meta.image}}<meta property="og:image" content="{{.meta.image}}">{{end}}
+  <link rel="stylesheet" href="/zen.css">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/htmx.min.js"></script>
+</head>
+<body>
+  <div class="zen-provider site" data-paint="true" data-component-theme="brand-s1">
+    <header class="topbar">
+      <div class="wrap topbar-row">
+        <a class="brand" href="/"><span class="mark" aria-hidden="true"></span><span class="zen-text zen-type-heading-4" data-tone="strongest">{{.site}}</span></a>
+        <span class="secure zen-text zen-type-body-small-medium" data-tone="base">{{template "icon-shield"}}<span>Secure checkout</span></span>
+      </div>
+    </header>
+    <main>{{block "content" .}}{{end}}</main>
+    <footer class="footer">
+      <div class="wrap footer-row">
+        <span class="zen-text zen-type-body-small-regular" data-tone="light">© {{.year}} {{.site}}</span>
+        <span class="zen-text zen-type-body-small-regular" data-tone="light">Payments handled by Stripe</span>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

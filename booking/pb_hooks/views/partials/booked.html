@@ -1,0 +1,11 @@
+<div class="booked">
+  <span class="booked-icon" aria-hidden="true">{{template "icon-check-circle"}}</span>
+  <h2 class="zen-text zen-heading zen-type-heading-2" data-tone="strongest">You're booked</h2>
+  <p class="zen-text zen-type-body-base-regular" data-tone="base">We sent the details to <strong>{{.email}}</strong>.</p>
+  <dl class="summary">
+    <div><dt class="zen-type-body-small-regular">Service</dt><dd class="zen-type-body-base-medium">{{.service}} · {{.minutes}} min</dd></div>
+    <div><dt class="zen-type-body-small-regular">When</dt><dd class="zen-type-body-base-medium">{{.day}}, {{.time}}</dd></div>
+    <div><dt class="zen-type-body-small-regular">Price</dt><dd class="zen-type-body-base-medium">{{.price}}</dd></div>
+  </dl>
+  <a class="zen-button" data-size="md" data-appearance="main" data-level="secondary" data-variant="secondary" href="/"><span class="zen-button__label zen-type-button-label-m">Book another time</span></a>
+</div>

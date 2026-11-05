@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.site}}</title>
+  <meta name="description" content="{{.pitch}}">
+  <meta property="og:title" content="{{.site}}">
+  <meta property="og:description" content="{{.pitch}}">
+  <meta name="htmx-config" content='{"responseHandling":[{"code":"204","swap":false},{"code":"[23]..","swap":true},{"code":"422","swap":true},{"code":"[45]..","swap":false,"error":true}]}'>
+  <link rel="stylesheet" href="/zen.css">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/htmx.min.js"></script>
+</head>
+<body>
+  <div class="zen-provider site" data-paint="true" data-component-theme="brand-s1">
+    <header class="topbar">
+      <div class="wrap topbar-row">
+        <a class="brand" href="/"><span class="mark" aria-hidden="true"></span><span class="zen-text zen-type-heading-4" data-tone="strongest">{{.site}}</span></a>
+        <nav class="nav" aria-label="Sections">
+          <a class="nav-link zen-type-body-base-medium" href="#features">Features</a>
+          <a class="nav-link zen-type-body-base-medium" href="#faq">FAQ</a>
+          <a class="nav-link zen-type-body-base-medium" href="#contact">Contact</a>
+          <a class="zen-button" data-size="sm" data-appearance="main" data-level="primary" data-variant="primary" href="#top"><span class="zen-button__label zen-type-button-label-s">Get early access</span></a>
+        </nav>
+      </div>
+    </header>
+    <main>{{block "content" .}}{{end}}</main>
+    <footer class="footer">
+      <div class="wrap footer-row">
+        <span class="zen-text zen-type-body-small-regular" data-tone="light">© {{.year}} {{.site}}</span>
+        <span class="zen-text zen-type-body-small-regular" data-tone="light">Powered by PocketBase</span>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

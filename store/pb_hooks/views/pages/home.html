@@ -1,0 +1,16 @@
+{{define "content"}}
+<section class="banner">
+  <div class="wrap banner-inner">
+    <div class="banner-text">
+      <span class="eyebrow zen-text zen-type-all-caps-s" data-tone="accent">New season</span>
+      <h1 class="zen-text zen-heading zen-type-display-2" data-tone="strongest">{{.site}}</h1>
+      <p class="zen-text zen-type-body-extra-regular" data-tone="base">{{.tagline}}</p>
+    </div>
+    <ul class="perks">
+      <li class="zen-text zen-type-body-small-medium" data-tone="base">{{template "icon-bag"}}Free returns for 30 days</li>
+      <li class="zen-text zen-type-body-small-medium" data-tone="base">{{template "icon-shield"}}Pay safely with Stripe</li>
+    </ul>
+  </div>
+</section>
+<div class="wrap shop">{{template "catalog.html" .catalog}}</div>
+{{end}}

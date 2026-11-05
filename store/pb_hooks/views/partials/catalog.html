@@ -1,0 +1,24 @@
+<div id="catalog" class="catalog">
+  <div class="toolbar">
+    <nav class="chips" aria-label="Categories">
+      {{range .chips}}
+      <a class="chip zen-type-body-base-medium" href="{{.href}}" {{if .selected}}aria-current="page"{{end}}
+        hx-get="/shop/catalog?{{.query}}" hx-target="#catalog" hx-swap="outerHTML">{{.name}}</a>
+      {{end}}
+    </nav>
+    <label class="sort zen-type-body-small-regular"><span class="zen-visually-hidden">Sort by</span>
+      <select name="sort" class="sort-select zen-type-body-base-medium" hx-get="/shop/catalog" hx-target="#catalog" hx-swap="outerHTML" hx-include="[name=category]">
+        {{range .sorts}}<option value="{{.value}}" {{if .selected}}selected{{end}}>{{.label}}</option>{{end}}
+      </select>
+      <input type="hidden" name="category" value="{{.category}}">
+    </label>
+  </div>
+  {{if .products}}
+  <ul class="products">{{range .products}}{{template "product-card.html" .}}{{end}}</ul>
+  {{else}}
+  <section class="zen-empty-state"><div class="zen-empty-state__body"><div class="zen-empty-state__content">
+    <h3 class="zen-empty-state__title zen-type-heading-4">Nothing here yet</h3>
+    <p class="zen-empty-state__caption zen-type-body-base-regular">Add products in your PocketBase and tick <strong>active</strong>.</p>
+  </div></div></section>
+  {{end}}
+</div>

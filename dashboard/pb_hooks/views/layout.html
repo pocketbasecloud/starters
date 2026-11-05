@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.site}}</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="/zen.css">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/htmx.min.js"></script>
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <template id="alert-icon">{{template "icon-alert"}}</template>
+  <div class="zen-provider app" data-paint="true" data-component-theme="brand-s1">
+    {{block "content" .}}{{end}}
+  </div>
+</body>
+</html>
