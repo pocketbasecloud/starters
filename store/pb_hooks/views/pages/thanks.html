@@ -1,0 +1,10 @@
+{{define "content"}}
+<div class="wrap narrow notice">
+  {{if .order}}{{template "order-status.html" .}}{{else}}
+  <section class="zen-empty-state"><div class="zen-empty-state__body"><div class="zen-empty-state__content">
+    <h3 class="zen-empty-state__title zen-type-heading-4">Thank you for your order</h3>
+    <p class="zen-empty-state__caption zen-type-body-base-regular">Stripe has emailed your receipt. <a class="zen-link" data-tone="hyperlink" data-underline="hover" href="/">Keep shopping</a></p>
+  </div></div></section>
+  {{end}}
+</div>
+{{end}}

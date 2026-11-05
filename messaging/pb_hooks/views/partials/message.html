@@ -1,0 +1,8 @@
+<li class="message{{if .mine}} message--mine{{end}}" id="message-{{.id}}" data-created="{{.created}}">
+  {{if not .mine}}{{template "avatar.html" .author}}{{end}}
+  <div class="bubble-wrap">
+    {{if not .mine}}<span class="zen-text zen-type-caption-regular author" data-tone="base">{{.author.name}}</span>{{end}}
+    <div class="bubble zen-type-body-base-regular">{{.body}}</div>
+    <time class="zen-text zen-type-caption-regular" data-tone="light">{{.time}}</time>
+  </div>
+</li>

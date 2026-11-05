@@ -1,0 +1,16 @@
+<div class="panel-section">
+  <h2 class="zen-text zen-heading zen-type-heading-4" data-tone="strongest">Your profile</h2>
+  <p class="zen-text zen-type-body-small-regular" data-tone="light">Signed in as {{.email}}. Others see your name, not your email.</p>
+  <form class="stack" hx-post="/app/profile" hx-target="#panel-body">
+    <div class="zen-input-field" data-size="medium" data-state="default">
+      <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="profile-name">Name</label></span></span>
+      <div class="zen-input__control"><input id="profile-name" class="zen-input__native zen-type-body-base-medium" name="display_name" maxlength="60" value="{{.display_name}}" required></div>
+    </div>
+    <div class="zen-input-field" data-size="medium" data-state="default">
+      <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="profile-about">About</label></span></span>
+      <div class="zen-input__control"><input id="profile-about" class="zen-input__native zen-type-body-base-medium" name="about" maxlength="200" value="{{.about}}"></div>
+    </div>
+    {{if .saved}}<p class="saved zen-text zen-type-body-small-medium" role="status">{{template "icon-check-circle"}}Saved</p>{{end}}
+    <div><button type="submit" class="zen-button" data-size="md" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__label zen-type-button-label-m">Save</span></button></div>
+  </form>
+</div>

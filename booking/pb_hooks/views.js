@@ -1,159 +1,89 @@
-const VIEWS = `${__hooks}/views`;
-const UTC_OFFSET_MINUTES = 0;
-const OPEN_DAYS = [1, 2, 3, 4, 5];
-const OPEN_HOUR = 9;
-const CLOSE_HOUR = 17;
-const STEP_MINUTES = 30;
-const DAYS_AHEAD = 21;
-const NOTICE_MINUTES = 120;
-const CURRENCY_SYMBOL = "$";
-const EMAIL = /^[^\s@<>()"]+@[^\s@<>()"]+\.[^\s@<>()"]+$/;
+const audit = require(`${__hooks}/lib/audit.js`);
+const availability = require(`${__hooks}/lib/availability.js`);
+const clock = require(`${__hooks}/lib/clock.js`);
+const mail = require(`${__hooks}/lib/mail.js`);
+const settings = require(`${__hooks}/lib/settings.js`);
 
-const DAY_MS = 86400000;
-const OFFSET_MS = UTC_OFFSET_MINUTES * 60000;
-const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const WEEKDAYS_LONG = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const MONTHS_LONG = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const VIEWS = `${__hooks}/views`;
+const EMAIL = /^[^\s@<>()"]+@[^\s@<>()"]+\.[^\s@<>()"]+$/;
 
 function render(files, data) {
   return $template.loadFiles(...[...files, "icons.html"].map((file) => `${VIEWS}/${file}`)).render(data);
-}
-
-function page(name, title, data) {
-  return render(["layout.html", `pages/${name}.html`, "partials/times.html"], { ...data, title, site: siteName(), year: new Date().getFullYear() });
 }
 
 function siteName() {
   return $app.settings().meta.appName || "Bookings";
 }
 
-function zone() {
-  if (UTC_OFFSET_MINUTES === 0) return "UTC";
-  const sign = UTC_OFFSET_MINUTES > 0 ? "+" : "-";
-  const minutes = Math.abs(UTC_OFFSET_MINUTES);
-  return `UTC${sign}${Math.floor(minutes / 60)}${minutes % 60 ? `:${String(minutes % 60).padStart(2, "0")}` : ""}`;
-}
-
-function money(cents) {
-  if (!cents) return "Free";
-  const whole = String(Math.floor(cents / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return `${CURRENCY_SYMBOL}${whole}${cents % 100 ? `.${String(cents % 100).padStart(2, "0")}` : ""}`;
-}
-
-function local(utcMs) {
-  return new Date(utcMs + OFFSET_MS);
-}
-
-function dbDate(utcMs) {
-  return new Date(utcMs).toISOString().replace("T", " ");
-}
-
-function parseDbDate(value) {
-  return Date.parse(value.replace(" ", "T"));
-}
-
-function timeLabel(utcMs) {
-  const at = local(utcMs);
-  const hours = at.getUTCHours();
-  return `${hours % 12 || 12}:${String(at.getUTCMinutes()).padStart(2, "0")} ${hours < 12 ? "AM" : "PM"}`;
-}
-
-function dayLabel(utcMs) {
-  const at = local(utcMs);
-  return `${WEEKDAYS_LONG[at.getUTCDay()]} ${at.getUTCDate()} ${MONTHS_LONG[at.getUTCMonth()]}`;
-}
-
-function dayKey(localMidnight) {
-  return new Date(localMidnight).toISOString().slice(0, 10);
-}
-
-function openDays() {
-  const today = local(Date.now());
-  const start = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
-  const days = [];
-  for (let index = 0; index < DAYS_AHEAD; index++) {
-    const midnight = start + index * DAY_MS;
-    const at = new Date(midnight);
-    if (!OPEN_DAYS.includes(at.getUTCDay())) continue;
-    days.push({ key: dayKey(midnight), midnight, weekday: WEEKDAYS[at.getUTCDay()], date: at.getUTCDate(), month: MONTHS[at.getUTCMonth()] });
-  }
-  return days;
-}
-
-function activeService(app, id) {
-  if (!id) return null;
-  try {
-    const service = app.findRecordById("services", id);
-    return service.getBool("active") ? service : null;
-  } catch {
-    return null;
-  }
-}
-
-function freeSlots(app, service, key) {
-  const day = openDays().find((candidate) => candidate.key === key);
-  if (!service || !day) return [];
-  const length = service.getInt("minutes") * 60000;
-  const first = day.midnight + OPEN_HOUR * 3600000 - OFFSET_MS;
-  const close = day.midnight + CLOSE_HOUR * 3600000 - OFFSET_MS;
-  const busy = app
-    .findRecordsByFilter("bookings", "status = 'confirmed' && starts < {:to} && ends > {:from}", "starts", 500, 0, { from: dbDate(first), to: dbDate(close) })
-    .map((booking) => [parseDbDate(booking.getString("starts")), parseDbDate(booking.getString("ends"))]);
-  const earliest = Date.now() + NOTICE_MINUTES * 60000;
-  const slots = [];
-  for (let start = first; start + length <= close; start += STEP_MINUTES * 60000) {
-    if (start < earliest) continue;
-    if (busy.some(([from, to]) => start < to && start + length > from)) continue;
-    slots.push({ value: new Date(start).toISOString(), label: timeLabel(start), start });
-  }
-  return slots;
-}
-
-function serviceData(service) {
-  return { id: service.id, name: service.getString("name"), minutes: service.getInt("minutes"), price: money(service.getInt("price")), description: service.getString("description") };
-}
-
-function times(serviceId, key) {
-  return render(["partials/times.html"], { times: freeSlots($app, activeService($app, serviceId), key) });
+function page(name, title, data) {
+  return render(["layout.html", `pages/${name}.html`, "partials/times.html"], { ...data, title, site: siteName(), year: new Date().getFullYear() });
 }
 
 function text(value, max) {
   return String(value ?? "").trim().slice(0, max);
 }
 
-function sendConfirmation(details) {
-  const settings = $app.settings();
-  try {
-    const mail = new MailerMessage({
-      from: { address: settings.meta.senderAddress, name: settings.meta.senderName || details.site },
-      to: [{ address: details.email, name: details.name }],
-      subject: `Booked: ${details.service} on ${details.day} at ${details.time}`,
-      html: render(["emails/booking-confirmed.html"], details),
-    });
-    $app.newMailClient().send(mail);
-  } catch (error) {
-    $app.logger().warn("booking confirmation email failed", "error", String(error));
+function initials(name) {
+  return name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0].toUpperCase()).join("");
+}
+
+function staffData(member) {
+  const name = member.getString("name");
+  return { id: member.id, name, title: member.getString("title"), initials: initials(name) };
+}
+
+function serviceData(service, config) {
+  return {
+    id: service.id,
+    name: service.getString("name"),
+    minutes: service.getInt("minutes"),
+    price: settings.money(service.getInt("price"), config),
+    description: service.getString("description"),
+  };
+}
+
+function timesData(app, config, serviceId, choice, key) {
+  const service = availability.activeService(app, serviceId);
+  if (!service) return { times: [], reason: "Pick a service." };
+  const staffChoice = /^[a-z0-9]{15}$/.test(choice || "") ? choice : "";
+  if (staffChoice && availability.eligibleStaff(app, service, staffChoice).length === 0) {
+    return { times: [], reason: "This person doesn't offer that service. Pick someone else or anyone available." };
   }
+  const times = availability.freeSlots(app, config, service, staffChoice, key);
+  return { times, reason: times.length ? "" : "No times left on this day. Pick another day." };
 }
 
 function refusal(text, refreshTimes) {
   return { status: 422, html: render(["partials/error.html"], { text }), retarget: "#booking-error", refreshTimes };
 }
 
-module.exports = {
-  times,
+function staffName(app, id) {
+  try {
+    return app.findRecordById("staff", id).getString("name");
+  } catch {
+    return "";
+  }
+}
 
+module.exports = {
   page() {
-    const records = $app.findRecordsByFilter("services", "active = true", "sort,name", 50, 0);
-    const days = openDays();
-    const first = records.length > 0 ? days.find((day) => freeSlots($app, records[0], day.key).length > 0) || days[0] : null;
+    const config = settings.current();
+    const services = $app.findRecordsByFilter("services", "active = true", "sort,name", 50, 0);
+    const days = availability.openDays($app, config);
+    const first = services.length > 0
+      ? days.find((day) => availability.freeSlots($app, config, services[0], "", day.key).length > 0) || days[0]
+      : null;
     return page("book", `Book a time · ${siteName()}`, {
-      zone: zone(),
-      services: records.map(serviceData),
+      zone: settings.zone(config),
+      services: services.map((service) => serviceData(service, config)),
+      staff: availability.activeStaff($app).map(staffData),
       days: days.map((day) => ({ ...day, selected: first && day.key === first.key })),
-      times: first ? freeSlots($app, records[0], first.key) : [],
+      ...(first ? timesData($app, config, services[0].id, "", first.key) : { times: [], reason: "" }),
     });
+  },
+
+  times(serviceId, choice, key) {
+    return render(["partials/times.html"], timesData($app, settings.current(), serviceId, choice, key));
   },
 
   book(body) {
@@ -161,85 +91,107 @@ module.exports = {
     const email = text(body.email, 300).toLowerCase();
     const notes = text(body.notes, 1000);
     const startIso = text(body.time, 40);
+    const choice = text(body.staff, 15);
+    const isBot = text(body.website, 200) !== "";
     if (!name || email.length > 254 || !EMAIL.test(email)) return refusal("Enter your name and a valid email.");
     if (!startIso) return refusal("Pick a time.");
+    const config = settings.current();
     let booked = null;
     $app.runInTransaction((txApp) => {
-      const service = activeService(txApp, text(body.service, 30));
-      const slot = freeSlots(txApp, service, text(body.date, 10)).find((candidate) => candidate.value === startIso);
+      const service = availability.activeService(txApp, text(body.service, 15));
+      const slot = availability.freeSlots(txApp, config, service, /^[a-z0-9]{15}$/.test(choice) ? choice : "", text(body.date, 10))
+        .find((candidate) => candidate.value === startIso);
       if (!slot) return;
+      const staffId = slot.staff[0];
+      booked = { service, staffId, start: slot.start, end: slot.start + service.getInt("minutes") * 60000 };
+      if (isBot) return;
       const booking = new Record(txApp.findCollectionByNameOrId("bookings"));
       booking.set("service", service.id);
+      booking.set("staff", staffId);
       booking.set("name", name);
       booking.set("email", email);
       booking.set("notes", notes);
-      booking.set("starts", dbDate(slot.start));
-      booking.set("ends", dbDate(slot.start + service.getInt("minutes") * 60000));
+      booking.set("starts", clock.dbDate(booked.start));
+      booking.set("ends", clock.dbDate(booked.end));
       booking.set("status", "confirmed");
-      if (text(body.website, 200) === "") txApp.save(booking);
-      booked = { ...serviceData(service), start: slot.start };
+      txApp.save(booking);
+      audit.record(txApp, { actor: email, action: "booking.created", target: `bookings/${booking.id}`, detail: `${service.getString("name")} on ${clock.dayLabel(booked.start, config)} at ${clock.timeLabel(booked.start, config)}` });
     });
     if (!booked) return refusal("That time was just taken. Pick another one.", true);
     const details = {
       site: siteName(),
-      zone: zone(),
+      zone: settings.zone(config),
       name,
       email,
       notes,
-      service: booked.name,
-      minutes: booked.minutes,
-      price: booked.price,
-      day: dayLabel(booked.start),
-      time: timeLabel(booked.start),
+      ...serviceData(booked.service, config),
+      service: booked.service.getString("name"),
+      staff: staffName($app, booked.staffId),
+      day: clock.dayLabel(booked.start, config),
+      time: clock.timeLabel(booked.start, config),
     };
-    if (text(body.website, 200) === "") sendConfirmation(details);
+    if (!isBot) {
+      mail.send($app, {
+        to: email,
+        name,
+        subject: `Booked: ${details.service} on ${details.day} at ${details.time}`,
+        html: render(["emails/booking-confirmed.html"], details),
+      });
+    }
     return { status: 200, html: render(["partials/booked.html"], details) };
   },
 
   staffPage() {
-    return page("staff", `Schedule · ${siteName()}`, { zone: zone(), daysAhead: DAYS_AHEAD });
+    const config = settings.current();
+    return page("staff", `Schedule · ${siteName()}`, { zone: settings.zone(config), daysAhead: config.daysAhead });
   },
 
-  schedule() {
+  schedule(staffId, scope) {
+    const config = settings.current();
     const now = Date.now();
+    const mine = scope !== "all";
     const records = $app.findRecordsByFilter(
       "bookings",
-      "status = 'confirmed' && ends > {:from} && starts < {:to}",
+      `status = 'confirmed' && ends > {:from} && starts < {:to}${mine ? " && staff = {:staff}" : ""}`,
       "starts",
       500,
       0,
-      { from: dbDate(now), to: dbDate(now + DAYS_AHEAD * DAY_MS) },
+      { from: clock.dbDate(now), to: clock.dbDate(now + config.daysAhead * clock.DAY_MS), staff: staffId },
     );
     const services = {};
-    for (const service of $app.findRecordsByFilter("services", "", "", 200, 0)) services[service.id] = service;
+    for (const service of $app.findRecordsByFilter("services", "", "", 200, 0)) services[service.id] = service.getString("name");
+    const people = {};
+    for (const member of $app.findRecordsByFilter("staff", "", "", 200, 0)) people[member.id] = member.getString("name");
     const days = [];
     for (const booking of records) {
-      const start = parseDbDate(booking.getString("starts"));
-      const label = dayLabel(start);
+      const start = clock.parseDbDate(booking.getString("starts"));
+      const label = clock.dayLabel(start, config);
       if (days.length === 0 || days[days.length - 1].label !== label) days.push({ label, bookings: [] });
-      const service = services[booking.getString("service")];
       days[days.length - 1].bookings.push({
         id: booking.id,
-        time: timeLabel(start),
-        minutes: Math.round((parseDbDate(booking.getString("ends")) - start) / 60000),
+        time: clock.timeLabel(start, config),
+        minutes: Math.round((clock.parseDbDate(booking.getString("ends")) - start) / 60000),
         name: booking.getString("name"),
         email: booking.getString("email"),
         notes: booking.getString("notes"),
-        service: service ? service.getString("name") : "Service",
+        service: services[booking.getString("service")] || "Service",
+        staff: mine ? "" : people[booking.getString("staff")] || "",
       });
     }
     for (const day of days) day.count = `${day.bookings.length} booking${day.bookings.length === 1 ? "" : "s"}`;
-    return render(["partials/schedule.html"], { days });
+    return render(["partials/schedule.html"], { days, mine });
   },
 
-  cancel(id) {
+  cancel(id, actor) {
     let booking;
     try {
       booking = $app.findRecordById("bookings", id);
     } catch {
       throw new NotFoundError("Booking not found");
     }
+    if (booking.getString("status") === "cancelled") return;
     booking.set("status", "cancelled");
     $app.save(booking);
+    audit.record($app, { actor, action: "booking.cancelled", target: `bookings/${booking.id}`, detail: `Booking for ${booking.getString("name")} cancelled` });
   },
 };

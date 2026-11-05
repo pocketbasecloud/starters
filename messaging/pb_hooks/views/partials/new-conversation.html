@@ -1,0 +1,21 @@
+<div class="conversation">
+  <header class="pane-head">
+    <button type="button" class="zen-button zen-button--icon-only pane-back" data-size="sm" data-appearance="flat" data-level="primary" data-variant="primary" aria-label="Back to conversations" data-back><span class="zen-button__icon" aria-hidden="true">{{template "icon-arrow-left"}}</span></button>
+    <div class="pane-title"><h2 class="zen-text zen-heading zen-type-body-extra-bold" data-tone="strongest">New conversation</h2></div>
+  </header>
+  <form class="new-form stack" hx-post="/app/conversations" hx-target="#pane">
+    <div class="zen-input-field" data-size="large" data-state="default">
+      <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="new-emails">To</label></span></span>
+      <div class="zen-input__control"><input id="new-emails" class="zen-input__native zen-type-body-base-medium" name="emails" placeholder="grace@example.com, alan@example.com" autocomplete="off" required></div>
+    </div>
+    <div class="zen-input-field" data-size="large" data-state="default">
+      <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="new-title">Name (optional, for groups)</label></span></span>
+      <div class="zen-input__control"><input id="new-title" class="zen-input__native zen-type-body-base-medium" name="title" maxlength="80" autocomplete="off"></div>
+    </div>
+    <div class="zen-input-field" data-size="large" data-state="default">
+      <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="new-body">Message</label></span></span>
+      <div class="zen-input__control"><textarea id="new-body" class="zen-input__native zen-input__native--textarea zen-type-body-base-medium" name="body" rows="4" maxlength="4000"></textarea></div>
+    </div>
+    <div><button type="submit" class="zen-button" data-size="md" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__label zen-type-button-label-m">Start conversation</span></button></div>
+  </form>
+</div>

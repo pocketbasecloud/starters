@@ -1,0 +1,17 @@
+<li class="order" id="order-{{.id}}">
+  <div class="order-main">
+    <span class="zen-text zen-type-body-base-bold" data-tone="strongest">#{{.number}}</span>
+    <span class="zen-badge" data-size="small" data-tone="{{.tone}}" data-background="subtle"><span class="zen-badge__text zen-type-body-small-medium">{{.label}}</span></span>
+    <span class="zen-text zen-type-body-small-regular" data-tone="light">{{.date}}</span>
+  </div>
+  <div class="order-detail">
+    <span class="zen-text zen-type-body-base-regular" data-tone="strongest">{{.items}}</span>
+    {{if .email}}<a class="zen-link zen-type-body-small-regular" data-tone="hyperlink" data-underline="hover" href="mailto:{{.email}}">{{.email}}</a>{{end}}
+  </div>
+  <span class="zen-text zen-type-body-base-bold order-total" data-tone="strongest">{{.total}}</span>
+  <label class="order-action"><span class="zen-visually-hidden">Status of order {{.number}}</span>
+    <select class="sort-select zen-type-body-small-medium" name="status" hx-patch="/staff/orders/{{.id}}" hx-target="#order-{{.id}}" hx-swap="outerHTML">
+      {{range .statuses}}<option value="{{.value}}" {{if .selected}}selected{{end}}>{{.label}}</option>{{end}}
+    </select>
+  </label>
+</li>

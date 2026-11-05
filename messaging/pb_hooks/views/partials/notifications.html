@@ -1,0 +1,16 @@
+<div class="panel-section">
+  <div class="panel-title">
+    <h2 class="zen-text zen-heading zen-type-heading-4" data-tone="strongest">Notifications</h2>
+    {{if .notifications}}<button type="button" class="zen-button" data-size="sm" data-appearance="flat" data-level="primary" data-variant="primary" hx-post="/app/notifications/read" hx-target="#panel-body"><span class="zen-button__label zen-type-button-label-s">Mark all read</span></button>{{end}}
+  </div>
+  <ul class="notifications">
+    {{range .notifications}}
+    <li class="notification{{if not .read}} is-new{{end}}">
+      {{if .link}}<a class="zen-text zen-type-body-base-regular" data-tone="strongest" href="{{.link}}">{{.text}}</a>{{else}}<span class="zen-text zen-type-body-base-regular" data-tone="strongest">{{.text}}</span>{{end}}
+      <time class="zen-text zen-type-caption-regular" data-tone="light">{{.when}}</time>
+    </li>
+    {{else}}
+    <li class="zen-text zen-type-body-base-regular" data-tone="base">Nothing new.</li>
+    {{end}}
+  </ul>
+</div>

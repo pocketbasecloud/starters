@@ -1,0 +1,17 @@
+{{with .order}}
+<section class="order-status" id="order-status"
+  {{if eq .status "pending"}}hx-get="/thanks/status?order={{.id}}" hx-trigger="every 2s" hx-swap="outerHTML"{{end}}>
+  <span class="booked-icon {{if eq .status "pending"}}waiting{{end}}" aria-hidden="true">{{template "icon-check-circle"}}</span>
+  {{if eq .status "pending"}}
+  <h1 class="zen-text zen-heading zen-type-heading-2" data-tone="strongest">Confirming your payment…</h1>
+  <p class="zen-text zen-type-body-base-regular" data-tone="base">This takes a few seconds. You can keep this page open.</p>
+  {{else if eq .status "cancelled"}}
+  <h1 class="zen-text zen-heading zen-type-heading-2" data-tone="strongest">This order was cancelled</h1>
+  <p class="zen-text zen-type-body-base-regular" data-tone="base">No payment was taken. <a class="zen-link" data-tone="hyperlink" data-underline="hover" href="/">Back to the shop</a></p>
+  {{else}}
+  <h1 class="zen-text zen-heading zen-type-heading-2" data-tone="strongest">Thank you for your order</h1>
+  <p class="zen-text zen-type-body-base-regular" data-tone="base">Order <strong>#{{.number}}</strong> is paid. Stripe has emailed your receipt.</p>
+  <a class="zen-button" data-size="md" data-appearance="main" data-level="secondary" data-variant="secondary" href="/"><span class="zen-button__label zen-type-button-label-m">Keep shopping</span></a>
+  {{end}}
+</section>
+{{end}}

@@ -1,0 +1,37 @@
+<div id="cart" class="cart-layout">
+  {{if .basket.lines}}
+  <ul class="cart-lines">
+    {{range .basket.lines}}
+    <li class="cart-line">
+      <a class="cart-thumb" href="/products/{{.slug}}">{{template "tile.html" .}}</a>
+      <div class="cart-info">
+        <a class="zen-text zen-type-body-base-medium cart-name" data-tone="strongest" href="/products/{{.slug}}">{{.name}}</a>
+        <span class="zen-text zen-type-body-small-regular" data-tone="light">{{.price}} each</span>
+      </div>
+      <label class="cart-quantity"><span class="zen-visually-hidden">Quantity of {{.name}}</span>
+        <select class="sort-select zen-type-body-base-medium" name="quantity" hx-patch="/cart/items/{{.id}}" hx-target="#cart" hx-swap="outerHTML">
+          {{range .options}}<option value="{{.value}}" {{if .selected}}selected{{end}}>{{.value}}</option>{{end}}
+        </select>
+      </label>
+      <span class="zen-text zen-type-body-base-medium cart-total" data-tone="strongest">{{.lineTotal}}</span>
+      <button type="button" class="zen-button zen-button--icon-only" data-size="sm" data-appearance="flat" data-level="primary" data-variant="primary" aria-label="Remove {{.name}}"
+        hx-patch="/cart/items/{{.id}}" hx-vals='{"quantity": "0"}' hx-target="#cart" hx-swap="outerHTML"><span class="zen-button__icon" aria-hidden="true">{{template "icon-trash"}}</span></button>
+    </li>
+    {{end}}
+  </ul>
+  <aside class="zen-card cart-summary" data-tone="shadow" data-spacing="large"><div class="zen-card__content">
+    <div class="summary-row"><span class="zen-text zen-type-body-base-regular" data-tone="base">Items</span><span class="zen-text zen-type-body-base-medium" data-tone="strongest">{{.basket.count}}</span></div>
+    <div class="summary-row summary-total"><span class="zen-text zen-type-body-extra-bold" data-tone="strongest">Total</span><span class="zen-text zen-type-heading-3" data-tone="strongest">{{.basket.total}}</span></div>
+    <p class="zen-text zen-type-body-small-regular" data-tone="light">Shipping and taxes are added at checkout.</p>
+    <div id="cart-error"></div>
+    <button type="button" class="zen-button buy-button" data-size="lg" data-appearance="main" data-level="primary" data-variant="primary" hx-post="/checkout" hx-disabled-elt="this">
+      <span class="zen-button__icon" aria-hidden="true">{{template "icon-shield"}}</span><span class="zen-button__label zen-type-button-label-l">Checkout securely</span>
+    </button>
+  </div></aside>
+  {{else}}
+  <section class="zen-empty-state"><div class="zen-empty-state__body"><div class="zen-empty-state__content">
+    <h3 class="zen-empty-state__title zen-type-heading-4">Your cart is empty</h3>
+    <p class="zen-empty-state__caption zen-type-body-base-regular"><a class="zen-link" data-tone="hyperlink" data-underline="hover" href="/">Browse the shop</a> and add something you like.</p>
+  </div></div></section>
+  {{end}}
+</div>

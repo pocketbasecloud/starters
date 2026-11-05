@@ -1,0 +1,1 @@
+<div class="progress" id="progress" hx-get="/app/projects/{{.id}}/progress" hx-trigger="tasks-changed from:body" hx-target="this" hx-swap="outerHTML">{{template "progress" .}}</div>

@@ -1,0 +1,8 @@
+{{range .orders}}{{template "order-row.html" .}}{{else}}
+<li class="order-empty">
+  <section class="zen-empty-state"><div class="zen-empty-state__body"><div class="zen-empty-state__content">
+    <h3 class="zen-empty-state__title zen-type-heading-4">Nothing here</h3>
+    <p class="zen-empty-state__caption zen-type-body-base-regular">Orders show up once they are paid.</p>
+  </div></div></section>
+</li>
+{{end}}

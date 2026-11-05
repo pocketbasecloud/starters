@@ -104,3 +104,17 @@
 @media (prefers-reduced-motion: reduce) {
   .booked { animation: none; }
 }
+
+.people { display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: 10px; }
+.person { position: relative; cursor: pointer; }
+.person input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.person-body { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: var(--zen-color-background-container); box-shadow: inset 0 0 0 1px var(--zen-color-border-neutral-pale-default); transition: box-shadow 150ms ease, background 150ms ease; }
+.person:hover .person-body { box-shadow: inset 0 0 0 1px var(--zen-color-border-neutral-base, #bbb); }
+.person input:checked + .person-body { background: var(--zen-light-brand-2); box-shadow: inset 0 0 0 2px var(--zen-light-brand-9); }
+.person input:focus-visible + .person-body { outline: 2px solid var(--zen-color-content-accent-base); outline-offset: 2px; }
+.person-text { display: grid; gap: 2px; min-width: 0; }
+.avatar { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 0.875rem; color: #fff; background: linear-gradient(135deg, var(--zen-light-brand-8), var(--zen-light-brand-11)); }
+.avatar--any { color: var(--zen-light-brand-11); background: var(--zen-light-brand-3); }
+.avatar .zen-icon { width: 20px; height: 20px; }
+.toolbar { display: flex; }
+.scope-select { appearance: none; -webkit-appearance: none; height: 40px; padding: 0 36px 0 14px; border-radius: 10px; border: 1px solid var(--zen-color-border-neutral-pale-default); background: var(--zen-color-background-container) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%23666' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 12px center; color: var(--zen-color-content-neutral-strongest); cursor: pointer; }

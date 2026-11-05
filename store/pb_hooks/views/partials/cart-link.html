@@ -1,0 +1,1 @@
+{{if .cart.enabled}}<a class="cart-link zen-type-body-base-medium" id="cart-link" href="/cart" hx-get="/cart/link" hx-trigger="cart-changed from:body" hx-swap="outerHTML">{{template "icon-bag"}}<span>Cart</span>{{if .cart.count}}<span class="cart-count" aria-label="{{.cart.count}} items">{{.cart.count}}</span>{{end}}</a>{{end}}

@@ -8,7 +8,7 @@ routerAdd("GET", "/{$}", (e) => {
 routerAdd("GET", "/book/times", (e) => {
   const views = require(`${__hooks}/views.js`);
   const query = e.request.url.query();
-  return e.html(200, views.times(query.get("service"), query.get("date")));
+  return e.html(200, views.times(query.get("service"), query.get("staff"), query.get("date")));
 });
 
 routerAdd("POST", "/book", (e) => {
@@ -29,12 +29,12 @@ routerAdd("GET", "/staff", (e) => {
 
 routerAdd("GET", "/staff/schedule", (e) => {
   const views = require(`${__hooks}/views.js`);
-  return e.html(200, views.schedule());
-}, $apis.requireAuth("users"));
+  return e.html(200, views.schedule(e.auth.id, e.request.url.query().get("scope")));
+}, $apis.requireAuth("staff"));
 
 routerAdd("PATCH", "/staff/bookings/{id}/cancel", (e) => {
   const views = require(`${__hooks}/views.js`);
-  views.cancel(e.request.pathValue("id"));
+  views.cancel(e.request.pathValue("id"), e.auth.getString("email"));
   e.response.header().set("HX-Trigger", "bookings-changed");
   return e.noContent(204);
-}, $apis.requireAuth("users"));
+}, $apis.requireAuth("staff"));

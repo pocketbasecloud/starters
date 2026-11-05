@@ -1,5 +1,5 @@
 <p>Hi {{.name}},</p>
-<p>Your <strong>{{.service}}</strong> ({{.minutes}} min) with {{.site}} is booked for <strong>{{.day}} at {{.time}}</strong> ({{.zone}}).</p>
+<p>Your <strong>{{.service}}</strong> ({{.minutes}} min) with {{if .staff}}{{.staff}} at {{end}}{{.site}} is booked for <strong>{{.day}} at {{.time}}</strong> ({{.zone}}).</p>
 {{if .notes}}<p>Your notes: {{.notes}}</p>{{end}}
 <p>Need to change it? Reply to this email.</p>
 <p>See you then,<br>{{.site}}</p>

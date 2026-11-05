@@ -4,6 +4,7 @@
   <p class="zen-text zen-type-body-base-regular" data-tone="base">We sent the details to <strong>{{.email}}</strong>.</p>
   <dl class="summary">
     <div><dt class="zen-type-body-small-regular">Service</dt><dd class="zen-type-body-base-medium">{{.service}} · {{.minutes}} min</dd></div>
+    {{if .staff}}<div><dt class="zen-type-body-small-regular">With</dt><dd class="zen-type-body-base-medium">{{.staff}}</dd></div>{{end}}
     <div><dt class="zen-type-body-small-regular">When</dt><dd class="zen-type-body-base-medium">{{.day}}, {{.time}}</dd></div>
     <div><dt class="zen-type-body-small-regular">Price</dt><dd class="zen-type-body-base-medium">{{.price}}</dd></div>
   </dl>

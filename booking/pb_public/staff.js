@@ -37,7 +37,7 @@ function showError(message) {
 }
 
 function signedIn() {
-  return pb.authStore.isValid && pb.authStore.record?.collectionName === "users";
+  return pb.authStore.isValid && pb.authStore.record?.collectionName === "staff";
 }
 
 function render() {
@@ -74,7 +74,7 @@ document.querySelector("#signin-form").addEventListener("submit", async (event) 
   event.preventDefault();
   const form = new FormData(event.target);
   try {
-    await pb.collection("users").authWithPassword(form.get("email"), form.get("password"));
+    await pb.collection("staff").authWithPassword(form.get("email"), form.get("password"));
     showError("");
     render();
   } catch {

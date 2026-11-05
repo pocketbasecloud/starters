@@ -1,0 +1,57 @@
+{{define "head"}}
+<meta name="robots" content="noindex">
+<script type="module" src="/staff.js"></script>
+{{end}}
+
+{{define "content"}}
+<template id="alert-icon">{{template "icon-alert"}}</template>
+
+<section id="signin" class="auth" hidden>
+  <div class="zen-card auth-card" data-tone="shadow" data-spacing="large"><div class="zen-card__content">
+    <div class="auth-heading">
+      <h1 class="zen-text zen-heading zen-type-heading-2" data-tone="strongest">Staff sign in</h1>
+      <p class="zen-text zen-type-body-base-regular" data-tone="base">Staff accounts are added by an admin in PocketBase, under <strong>staff</strong>.</p>
+    </div>
+    <form id="signin-form" class="stack">
+      <div class="zen-input-field" data-size="large" data-state="default">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="staff-email">Email</label></span></span>
+        <div class="zen-input__control"><input id="staff-email" class="zen-input__native zen-type-body-base-medium" name="email" type="email" autocomplete="username" required></div>
+      </div>
+      <div class="zen-input-field" data-size="large" data-state="default">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="staff-password">Password</label></span></span>
+        <div class="zen-input__control"><input id="staff-password" class="zen-input__native zen-type-body-base-medium" name="password" type="password" autocomplete="current-password" required></div>
+      </div>
+      <div class="error-slot"></div>
+      <button type="submit" class="zen-button" data-size="lg" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__label zen-type-button-label-l">Sign in</span></button>
+    </form>
+  </div></div>
+</section>
+
+<div id="workspace" class="wrap staff-page" hidden>
+  <header class="zen-page-header">
+    <div class="zen-page-header__row">
+      <div class="zen-page-header__titles"><h1 class="zen-text zen-heading zen-type-heading-1" data-tone="strongest">Orders</h1></div>
+      <div class="account">
+        <span id="who" class="zen-text zen-type-body-small-regular" data-tone="base"></span>
+        <button id="signout" type="button" class="zen-button" data-size="sm" data-appearance="main" data-level="secondary" data-variant="secondary"><span class="zen-button__icon" aria-hidden="true">{{template "icon-log-out"}}</span><span class="zen-button__label zen-type-button-label-s">Sign out</span></button>
+      </div>
+    </div>
+    <p class="zen-text zen-type-body-base-regular zen-page-header__description" data-tone="base">Paid orders appear here as soon as Stripe confirms them.</p>
+  </header>
+  <div class="error-slot"></div>
+  <form id="filters" class="toolbar" onsubmit="return false">
+    <label class="sort zen-type-body-small-regular"><span class="zen-visually-hidden">Show</span>
+      <select name="status" class="sort-select zen-type-body-base-medium">
+        <option value="paid">To fulfil</option>
+        <option value="fulfilled">Fulfilled</option>
+        <option value="cancelled">Cancelled</option>
+        <option value="">All paid orders</option>
+      </select>
+    </label>
+  </form>
+  <div class="zen-card" data-tone="shadow" data-spacing="medium"><div class="zen-card__content">
+    <ul id="orders" class="orders" hx-get="/staff/orders" hx-include="#filters" hx-disinherit="hx-include"
+      hx-trigger="signed-in from:body, change from:#filters"></ul>
+  </div></div>
+</div>
+{{end}}

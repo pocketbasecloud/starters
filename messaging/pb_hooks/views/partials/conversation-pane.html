@@ -1,0 +1,27 @@
+{{if .id}}
+<div class="conversation" data-conversation="{{.id}}">
+  <header class="pane-head">
+    <button type="button" class="zen-button zen-button--icon-only pane-back" data-size="sm" data-appearance="flat" data-level="primary" data-variant="primary" aria-label="Back to conversations" data-back><span class="zen-button__icon" aria-hidden="true">{{template "icon-arrow-left"}}</span></button>
+    <div class="pane-title">
+      <h2 class="zen-text zen-heading zen-type-body-extra-bold" data-tone="strongest">{{.title}}</h2>
+      <span class="members">{{range .members}}{{template "avatar.html" .}}{{end}}<span class="zen-text zen-type-caption-regular" data-tone="light">{{len .members}} people</span></span>
+    </div>
+    <button type="button" class="zen-button" data-size="sm" data-appearance="main" data-level="secondary" data-variant="secondary"
+      hx-post="/app/conversations/{{.id}}/leave" hx-target="#pane" hx-confirm="Leave this conversation? You won't see new messages."><span class="zen-button__label zen-type-button-label-s">Leave</span></button>
+  </header>
+  <ol id="messages" class="messages">
+    {{range .messages}}{{template "message.html" .}}{{else}}<li class="messages-empty zen-text zen-type-body-base-regular" data-tone="light">No messages yet. Say hello.</li>{{end}}
+  </ol>
+  <form class="composer" hx-post="/app/conversations/{{.id}}/messages" hx-target="#messages" hx-swap="beforeend" hx-on::after-request="if (event.detail.successful) this.reset()">
+    <label class="zen-visually-hidden" for="composer-body">Message</label>
+    <textarea id="composer-body" class="composer-input zen-type-body-base-regular" name="body" rows="1" maxlength="4000" placeholder="Write a message" required></textarea>
+    <button type="submit" class="zen-button zen-button--icon-only" data-size="md" data-appearance="main" data-level="primary" data-variant="primary" aria-label="Send"><span class="zen-button__icon" aria-hidden="true">{{template "icon-arrow-right"}}</span></button>
+  </form>
+</div>
+{{else}}
+<div class="pane-empty">
+  <span class="pane-empty-icon" aria-hidden="true">{{template "icon-mail"}}</span>
+  <h2 class="zen-text zen-heading zen-type-heading-3" data-tone="strongest">Your messages</h2>
+  <p class="zen-text zen-type-body-base-regular" data-tone="base">Pick a conversation, or start a new one with anyone who has an account.</p>
+</div>
+{{end}}

@@ -1,0 +1,13 @@
+<li class="task{{if .done}} is-done{{end}}" id="task-{{.id}}">
+  <button type="button" class="check" role="checkbox" aria-checked="{{.done}}" aria-label="Done: {{.title}}"
+    hx-patch="/app/tasks/{{.id}}" hx-vals='{"done": "{{if .done}}false{{else}}true{{end}}"}' hx-target="#task-{{.id}}" hx-swap="outerHTML">{{if .done}}{{template "icon-check-xs"}}{{end}}</button>
+  <span class="task-title zen-text zen-type-body-base-regular" data-tone="strongest">{{.title}}</span>
+  {{with .assignee}}{{template "avatar.html" .}}{{end}}
+  <label class="zen-visually-hidden" for="assign-{{.id}}">Assign {{.title}}</label>
+  <select id="assign-{{.id}}" class="assign-select zen-type-body-small-medium" name="assignee" hx-patch="/app/tasks/{{.id}}" hx-target="#task-{{.id}}" hx-swap="outerHTML">
+    <option value="">Unassigned</option>
+    {{range .options}}<option value="{{.id}}" {{if .selected}}selected{{end}}>{{.name}}</option>{{end}}
+  </select>
+  <button type="button" class="zen-button zen-button--icon-only task-delete" data-size="sm" data-appearance="flat" data-level="primary" data-variant="primary" aria-label="Delete {{.title}}"
+    hx-delete="/app/tasks/{{.id}}" hx-target="#task-{{.id}}" hx-swap="outerHTML"><span class="zen-button__icon" aria-hidden="true">{{template "icon-trash"}}</span></button>
+</li>

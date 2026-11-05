@@ -6,7 +6,7 @@
     <li class="zen-card agenda-item" data-tone="shadow" data-spacing="medium" id="booking-{{.id}}"><div class="zen-card__content agenda-row">
       <span class="agenda-time"><strong class="zen-type-body-base-bold">{{.time}}</strong><span class="zen-type-body-small-regular">{{.minutes}} min</span></span>
       <span class="agenda-who">
-        <span class="zen-text zen-type-body-base-medium" data-tone="strongest">{{.name}} · {{.service}}</span>
+        <span class="zen-text zen-type-body-base-medium" data-tone="strongest">{{.name}} · {{.service}}{{if .staff}} · with {{.staff}}{{end}}</span>
         <a class="zen-link zen-type-body-small-regular" data-tone="hyperlink" data-underline="hover" href="mailto:{{.email}}">{{.email}}</a>
         {{if .notes}}<span class="zen-text zen-type-body-small-regular agenda-notes" data-tone="base">{{.notes}}</span>{{end}}
       </span>
@@ -19,6 +19,6 @@
 {{else}}
 <section class="zen-empty-state"><div class="zen-empty-state__body"><div class="zen-empty-state__content">
   <h3 class="zen-empty-state__title zen-type-heading-4">No bookings yet</h3>
-  <p class="zen-empty-state__caption zen-type-body-base-regular">New bookings appear here as soon as they are made.</p>
+  <p class="zen-empty-state__caption zen-type-body-base-regular">{{if .mine}}Nobody has booked you yet. New bookings appear here as soon as they are made.{{else}}New bookings appear here as soon as they are made.{{end}}</p>
 </div></div></section>
 {{end}}

@@ -1,0 +1,42 @@
+<div class="layout">
+  <aside class="sidebar" hx-target="#main">
+    <label class="team-switch">
+      <span class="zen-visually-hidden">Team</span>
+      <select name="team" class="team-select zen-type-body-base-bold" hx-get="/app/home">
+        {{range .teams}}<option value="{{.id}}" {{if .selected}}selected{{end}}>{{.name}}</option>{{end}}
+      </select>
+    </label>
+    <span class="zen-text zen-type-caption-regular role-note" data-tone="light">You are {{.team.role}}</span>
+
+    <nav class="nav" aria-label="Team">
+      <a class="nav-item{{if eq .view "people"}} is-active{{end}}" href="/t/{{.team.id}}/people" hx-get="/app/home?team={{.team.id}}&view=people">{{template "icon-stars"}}<span>People</span><span class="nav-count">{{.memberCount}}</span></a>
+    </nav>
+
+    <div class="nav-label zen-text zen-type-all-caps-s" data-tone="light">Projects</div>
+    <nav class="nav" aria-label="Projects">
+      {{range .projects}}
+      <a class="nav-item{{if .selected}} is-active{{end}}" href="/t/{{$.team.id}}/p/{{.id}}" hx-get="/app/home?team={{$.team.id}}&project={{.id}}"><span class="dot" aria-hidden="true"></span><span>{{.name}}</span></a>
+      {{else}}
+      <p class="zen-text zen-type-body-small-regular nav-empty" data-tone="light">No projects yet.</p>
+      {{end}}
+    </nav>
+    <form class="new-project" hx-post="/app/teams/{{.team.id}}/projects">
+      <label class="zen-visually-hidden" for="new-project">New project</label>
+      <input id="new-project" class="new-project-input zen-type-body-small-medium" name="name" maxlength="80" placeholder="New project" autocomplete="off" required>
+      <button type="submit" class="zen-button zen-button--icon-only" data-size="sm" data-appearance="main" data-level="secondary" data-variant="secondary" aria-label="Create project"><span class="zen-button__icon" aria-hidden="true">{{template "icon-plus"}}</span></button>
+    </form>
+    <button type="button" class="zen-button new-team" data-size="sm" data-appearance="flat" data-level="primary" data-variant="primary" hx-get="/app/teams/new"><span class="zen-button__icon" aria-hidden="true">{{template "icon-plus"}}</span><span class="zen-button__label zen-type-button-label-s">New team</span></button>
+  </aside>
+
+  <section class="content">
+    {{if eq .view "project"}}{{template "project.html" .project}}
+    {{else if eq .view "people"}}{{template "people.html" .people}}
+    {{else}}
+    <div class="overview">
+      <span class="overview-icon" aria-hidden="true">{{template "icon-calendar"}}</span>
+      <h1 class="zen-text zen-heading zen-type-heading-2" data-tone="strongest">{{.team.name}}</h1>
+      <p class="zen-text zen-type-body-base-regular" data-tone="base">{{if .projects}}Pick a project on the left, or start a new one.{{else}}Start your first project on the left, then invite your team from People.{{end}}</p>
+    </div>
+    {{end}}
+  </section>
+</div>

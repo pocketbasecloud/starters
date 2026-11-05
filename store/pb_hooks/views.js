@@ -1,7 +1,22 @@
+const cart = require(`${__hooks}/lib/cart.js`);
+const orders = require(`${__hooks}/lib/orders.js`);
+const settings = require(`${__hooks}/lib/settings.js`);
+const stripe = require(`${__hooks}/lib/stripe.js`);
+
 const VIEWS = `${__hooks}/views`;
-const PARTIALS = ["partials/catalog.html", "partials/product-card.html", "partials/tile.html", "icons.html"];
-const CURRENCY_SYMBOL = "$";
-const TAGLINE = "Small-batch goods, made to last.";
+const PARTIALS = [
+  "partials/catalog.html",
+  "partials/product-card.html",
+  "partials/tile.html",
+  "partials/cart-link.html",
+  "partials/cart-panel.html",
+  "partials/add-button.html",
+  "partials/order-status.html",
+  "partials/order-rows.html",
+  "partials/order-row.html",
+  "partials/error.html",
+  "icons.html",
+];
 const LIMIT = 60;
 const SORTS = {
   featured: ["Featured", "-featured,-created"],
@@ -9,6 +24,7 @@ const SORTS = {
   "price-asc": ["Price: low to high", "price,name"],
   "price-desc": ["Price: high to low", "-price,name"],
 };
+const STATUS_TONES = { pending: "neutral", paid: "green", fulfilled: "blue", cancelled: "neutral" };
 
 function siteName() {
   return $app.settings().meta.appName || "Store";
@@ -18,9 +34,13 @@ function render(files, data) {
   return $template.loadFiles(...files.map((file) => `${VIEWS}/${file}`)).render(data);
 }
 
+function fragment(name, data) {
+  const entry = `partials/${name}.html`;
+  return render([entry, ...PARTIALS.filter((file) => file !== entry)], data);
+}
+
 function money(cents) {
-  const whole = String(Math.floor(cents / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return `${CURRENCY_SYMBOL}${whole}.${String(cents % 100).padStart(2, "0")}`;
+  return settings.money(cents, settings.current().currency);
 }
 
 function hueOf(text) {
@@ -41,6 +61,7 @@ function card(record) {
   const name = record.getString("name");
   const images = record.getStringSlice("images");
   return {
+    id: record.id,
     name,
     slug: record.getString("slug"),
     summary: record.getString("summary"),
@@ -52,12 +73,20 @@ function card(record) {
   };
 }
 
-function page(name, meta, data) {
+function cartState(e, current) {
+  const lines = current || cart.read(e);
+  return { enabled: stripe.configured(), count: lines.reduce((sum, line) => sum + line.quantity, 0) };
+}
+
+function page(e, name, meta, data) {
+  const store = settings.current();
   return render(["layout.html", `pages/${name}.html`, ...PARTIALS], {
     ...data,
     meta: { description: "", image: "", ...meta },
     site: siteName(),
     year: new Date().getFullYear(),
+    store,
+    cart: cartState(e),
   });
 }
 
@@ -98,19 +127,60 @@ function catalogData(categorySlug, sortKey) {
   };
 }
 
-function catalog(categorySlug, sortKey) {
-  return render(PARTIALS, catalogData(categorySlug, sortKey));
+function cartData(e, current) {
+  const lines = cart.resolve(current || cart.read(e));
+  const total = lines.reduce((sum, line) => sum + line.price * line.quantity, 0);
+  return {
+    lines: lines.map((line) => ({
+      ...card(line.product),
+      quantity: line.quantity,
+      lineTotal: money(line.price * line.quantity),
+      options: Array.from({ length: cart.MAX_QUANTITY }, (_, index) => ({ value: index + 1, selected: index + 1 === line.quantity })),
+    })),
+    count: lines.reduce((sum, line) => sum + line.quantity, 0),
+    total: money(total),
+  };
+}
+
+function orderData(order) {
+  const items = $app.findRecordsByFilter("order_items", "order = {:order}", "name", 100, 0, { order: order.id });
+  const status = order.getString("status");
+  return {
+    id: order.id,
+    number: orders.number(order),
+    email: order.getString("email"),
+    date: order.getDateTime("created").time().format("Jan 2, 2006"),
+    total: settings.money(order.getInt("total"), order.getString("currency")),
+    items: items.map((item) => `${item.getInt("quantity")} × ${item.getString("name")}`).join(", "),
+    status,
+    label: status[0].toUpperCase() + status.slice(1),
+    tone: STATUS_TONES[status] || "neutral",
+    statuses: orders.STAFF_STATUSES.map((value) => ({ value, label: value[0].toUpperCase() + value.slice(1), selected: value === status })),
+  };
+}
+
+function orderById(id) {
+  if (!/^[a-z0-9]{15}$/.test(id || "")) return null;
+  try {
+    return $app.findRecordById("orders", id);
+  } catch {
+    return null;
+  }
 }
 
 module.exports = {
-  catalog,
   shopUrl,
 
-  home(categorySlug, sortKey) {
-    return page("home", { title: siteName(), description: TAGLINE }, { tagline: TAGLINE, catalog: catalogData(categorySlug, sortKey) });
+  home(e, categorySlug, sortKey) {
+    const store = settings.current();
+    return page(e, "home", { title: siteName(), description: store.tagline }, { catalog: catalogData(categorySlug, sortKey) });
   },
 
-  product(slug) {
+  catalog(categorySlug, sortKey) {
+    return fragment("catalog", catalogData(categorySlug, sortKey));
+  },
+
+  product(e, slug) {
     let record;
     try {
       record = $app.findFirstRecordByFilter("products", "slug = {:slug} && active = true", { slug });
@@ -138,14 +208,63 @@ module.exports = {
       description: record.getString("description"),
       related,
     };
-    return page("product", { title: `${data.name} · ${siteName()}`, description: data.summary, image: data.image }, { product });
+    return page(e, "product", { title: `${data.name} · ${siteName()}`, description: data.summary, image: data.image }, { product });
   },
 
-  thanks() {
-    return page("message", { title: `Thank you · ${siteName()}` }, { heading: "Thank you for your order", text: "Stripe has emailed your receipt. We'll send tracking details as soon as it ships." });
+  activeProduct(id) {
+    try {
+      const product = $app.findRecordById("products", id);
+      return product.getBool("active") ? product : null;
+    } catch {
+      return null;
+    }
   },
 
-  notFound() {
-    return page("message", { title: `Not found · ${siteName()}` }, { heading: "Product not found", text: "It may be sold out or no longer available." });
+  addButton(product, added) {
+    return fragment("add-button", { id: product.id, added });
+  },
+
+  cartPage(e) {
+    return page(e, "cart", { title: `Cart · ${siteName()}` }, { basket: cartData(e) });
+  },
+
+  cartPanel(e, current) {
+    return fragment("cart-panel", { basket: cartData(e, current), cart: cartState(e, current) });
+  },
+
+  cartLink(e) {
+    return fragment("cart-link", { cart: cartState(e) });
+  },
+
+  error(text) {
+    return fragment("error", { text });
+  },
+
+  thanks(e, orderId) {
+    const order = orderById(orderId);
+    return page(e, "thanks", { title: `Thank you · ${siteName()}` }, { order: order ? orderData(order) : null });
+  },
+
+  orderStatus(orderId) {
+    const order = orderById(orderId);
+    return order ? fragment("order-status", { order: orderData(order) }) : "";
+  },
+
+  notFound(e) {
+    return page(e, "message", { title: `Not found · ${siteName()}` }, { heading: "Product not found", text: "It may be sold out or no longer available." });
+  },
+
+  staffPage(e) {
+    return page(e, "staff", { title: `Orders · ${siteName()}` }, {});
+  },
+
+  staffOrders(status) {
+    const filter = orders.STATUSES.includes(status) ? "status = {:status}" : "status != 'pending'";
+    const records = $app.findRecordsByFilter("orders", filter, "-created", 100, 0, { status });
+    return fragment("order-rows", { orders: records.map(orderData) });
+  },
+
+  orderRow(order) {
+    return fragment("order-row", orderData(order));
   },
 };

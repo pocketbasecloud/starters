@@ -9,14 +9,19 @@
   {{if .meta.image}}<meta property="og:image" content="{{.meta.image}}">{{end}}
   <link rel="stylesheet" href="/zen.css">
   <link rel="stylesheet" href="/style.css">
+  <meta name="htmx-config" content='{"responseHandling":[{"code":"204","swap":false},{"code":"[23]..","swap":true},{"code":"422","swap":true},{"code":"502","swap":true},{"code":"[45]..","swap":false,"error":true}]}'>
   <script src="/htmx.min.js"></script>
+  {{block "head" .}}{{end}}
 </head>
 <body>
   <div class="zen-provider site" data-paint="true" data-component-theme="brand-s1">
     <header class="topbar">
       <div class="wrap topbar-row">
         <a class="brand" href="/"><span class="mark" aria-hidden="true"></span><span class="zen-text zen-type-heading-4" data-tone="strongest">{{.site}}</span></a>
-        <span class="secure zen-text zen-type-body-small-medium" data-tone="base">{{template "icon-shield"}}<span>Secure checkout</span></span>
+        <div class="topbar-actions">
+          <span class="secure zen-text zen-type-body-small-medium" data-tone="base">{{template "icon-shield"}}<span>Secure checkout</span></span>
+          {{template "cart-link.html" .}}
+        </div>
       </div>
     </header>
     <main>{{block "content" .}}{{end}}</main>

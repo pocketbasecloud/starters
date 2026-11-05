@@ -1,0 +1,76 @@
+<div class="people">
+  <header class="project-head">
+    <div>
+      <h1 class="zen-text zen-heading zen-type-heading-2" data-tone="strongest">People</h1>
+      <p class="zen-text zen-type-body-base-regular" data-tone="base">Owners manage everything, admins invite and remove members, members work on projects.</p>
+    </div>
+  </header>
+
+  {{with .flash}}
+  <div class="zen-inline-message flash" data-tone="positive" role="status"><div class="zen-inline-message__container">
+    <span class="zen-inline-message__icon" aria-hidden="true">{{template "icon-check-circle"}}</span>
+    <div class="zen-inline-message__content"><div class="zen-inline-message__text"><span class="zen-inline-message__caption zen-type-body-small-regular">
+      {{if .sent}}We emailed an invite to {{.email}}.{{else}}Invite for {{.email}} created. Email isn't set up, so send them this link:{{end}}
+      <input class="invite-link" readonly value="{{.link}}" aria-label="Invite link" onclick="this.select()">
+    </span></div></div>
+  </div></div>
+  {{end}}
+
+  {{if .manager}}
+  <form class="invite-form" hx-post="/app/invite-links" hx-target="#main">
+    <input type="hidden" name="team" value="{{.team}}">
+    <label class="zen-visually-hidden" for="invite-email">Email</label>
+    <input id="invite-email" class="add-task-input zen-type-body-base-medium" name="email" type="email" placeholder="colleague@company.com" autocomplete="off" required>
+    <label class="zen-visually-hidden" for="invite-role">Role</label>
+    <select id="invite-role" class="assign-select zen-type-body-small-medium" name="role">
+      <option value="member">Member</option>
+      {{if .owner}}<option value="admin">Admin</option>{{end}}
+    </select>
+    <button type="submit" class="zen-button" data-size="md" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__icon" aria-hidden="true">{{template "icon-mail"}}</span><span class="zen-button__label zen-type-button-label-m">Invite</span></button>
+  </form>
+  {{end}}
+
+  <div class="zen-card" data-tone="shadow" data-spacing="medium"><div class="zen-card__content">
+    <ul class="member-list">
+      {{range .members}}
+      <li class="member-row">
+        {{template "avatar.html" .}}
+        <span class="member-name"><span class="zen-text zen-type-body-base-medium" data-tone="strongest">{{.name}}{{if .self}} (you){{end}}</span></span>
+        {{if .canChangeRole}}
+        <label class="zen-visually-hidden" for="role-{{.memberId}}">Role of {{.name}}</label>
+        <select id="role-{{.memberId}}" class="assign-select zen-type-body-small-medium" name="role" hx-patch="/app/members/{{.memberId}}" hx-target="#main">
+          {{range .roles}}<option value="{{.value}}" {{if .selected}}selected{{end}}>{{.label}}</option>{{end}}
+        </select>
+        {{else}}
+        <span class="zen-badge" data-size="small" data-tone="neutral" data-background="subtle"><span class="zen-badge__text zen-type-body-small-medium">{{.roleLabel}}</span></span>
+        {{end}}
+        {{if .self}}
+        <button type="button" class="zen-button" data-size="sm" data-appearance="flat" data-level="primary" data-variant="primary" hx-delete="/app/members/{{.memberId}}" hx-target="#main" hx-confirm="Leave this team?"><span class="zen-button__label zen-type-button-label-s">Leave</span></button>
+        {{else if .canRemove}}
+        <button type="button" class="zen-button" data-size="sm" data-appearance="flat" data-level="primary" data-variant="primary" hx-delete="/app/members/{{.memberId}}" hx-target="#main" hx-confirm="Remove {{.name}} from the team?"><span class="zen-button__label zen-type-button-label-s">Remove</span></button>
+        {{end}}
+      </li>
+      {{end}}
+    </ul>
+  </div></div>
+
+  {{if .invites}}
+  <h2 class="zen-text zen-heading zen-type-body-extra-bold section-heading" data-tone="strongest">Pending invites</h2>
+  <ul class="member-list plain">
+    {{range .invites}}
+    <li class="member-row">
+      <span class="avatar avatar--pending" aria-hidden="true">{{template "icon-mail"}}</span>
+      <span class="member-name"><span class="zen-text zen-type-body-base-medium" data-tone="strongest">{{.email}}</span><span class="zen-text zen-type-caption-regular" data-tone="light">{{.role}} · link works until {{.expires}}</span></span>
+      <button type="button" class="zen-button" data-size="sm" data-appearance="flat" data-level="primary" data-variant="primary" hx-delete="/app/invite-links/{{.id}}" hx-target="#main"><span class="zen-button__label zen-type-button-label-s">Revoke</span></button>
+    </li>
+    {{end}}
+  </ul>
+  {{end}}
+
+  <h2 class="zen-text zen-heading zen-type-body-extra-bold section-heading" data-tone="strongest">Recent activity</h2>
+  <ul class="activity">
+    {{range .activity}}
+    <li><span class="zen-text zen-type-body-small-regular" data-tone="strongest">{{.actor}}</span> <span class="zen-text zen-type-body-small-regular" data-tone="base">{{.action}}{{if .detail}}: {{.detail}}{{end}}</span> <time class="zen-text zen-type-caption-regular" data-tone="light">{{.when}}</time></li>
+    {{end}}
+  </ul>
+</div>

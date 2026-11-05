@@ -11,7 +11,7 @@
     <div class="auth-heading">
       <span class="mark" aria-hidden="true"></span>
       <h1 class="zen-text zen-heading zen-type-heading-2" data-tone="strongest">Staff sign in</h1>
-      <p class="zen-text zen-type-body-base-regular" data-tone="base">Staff accounts are added by an admin in PocketBase.</p>
+      <p class="zen-text zen-type-body-base-regular" data-tone="base">Staff accounts are added by an admin in PocketBase, under <strong>staff</strong>.</p>
     </div>
     <form id="signin-form" class="stack">
       <div class="zen-input-field" data-size="large" data-state="default">
@@ -44,7 +44,15 @@
       <p class="zen-text zen-type-body-base-regular zen-page-header__description" data-tone="base">Confirmed bookings for the next {{.daysAhead}} days, in {{.zone}}.</p>
     </header>
     <div class="error-slot"></div>
-    <div id="schedule" hx-get="/staff/schedule" hx-trigger="signed-in from:body, bookings-changed from:body"></div>
+    <form id="scope" class="toolbar" onsubmit="return false">
+      <label class="zen-type-body-small-regular"><span class="zen-visually-hidden">Show</span>
+        <select name="scope" class="scope-select zen-type-body-base-medium">
+          <option value="mine">My bookings</option>
+          <option value="all">Everyone's bookings</option>
+        </select>
+      </label>
+    </form>
+    <div id="schedule" hx-get="/staff/schedule" hx-include="#scope" hx-disinherit="hx-include" hx-trigger="signed-in from:body, bookings-changed from:body, change from:#scope"></div>
   </main>
 </div>
 {{end}}

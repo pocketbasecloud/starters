@@ -1,0 +1,14 @@
+<div class="onboarding">
+  <div class="zen-card onboarding-card" data-tone="shadow" data-spacing="large"><div class="zen-card__content">
+    <span class="onboarding-icon" aria-hidden="true">{{template "icon-stars"}}</span>
+    <h1 class="zen-text zen-heading zen-type-heading-2" data-tone="strongest">Create your team</h1>
+    <p class="zen-text zen-type-body-base-regular" data-tone="base">A team holds your projects and the people you work with. You can invite them next.</p>
+    <form class="stack" hx-post="/app/teams" hx-target="#main">
+      <div class="zen-input-field" data-size="large" data-state="default">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="team-name">Team name</label></span></span>
+        <div class="zen-input__control"><input id="team-name" class="zen-input__native zen-type-body-base-medium" name="name" maxlength="60" placeholder="Acme design" autocomplete="off" required></div>
+      </div>
+      <button type="submit" class="zen-button" data-size="lg" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__label zen-type-button-label-l">Create team</span></button>
+    </form>
+  </div></div>
+</div>

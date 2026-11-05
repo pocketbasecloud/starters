@@ -1,0 +1,75 @@
+{{define "content"}}
+<section id="welcome" class="auth" hidden>
+  <div class="zen-card auth-card" data-tone="shadow" data-spacing="large"><div class="zen-card__content">
+    <div class="auth-heading">
+      <span class="mark" aria-hidden="true"></span>
+      <h1 class="zen-text zen-heading zen-type-heading-2" data-tone="strongest">{{.site}}</h1>
+      <p class="zen-text zen-type-body-base-regular" data-tone="base">Private conversations with the people you work with.</p>
+    </div>
+    <div class="zen-segmented" data-level="secondary" data-size="medium" role="group" aria-label="Account" data-name="auth">
+      <button type="button" class="zen-segmented__item" data-size="medium" data-state="default" data-value="signin" data-selected="true" aria-pressed="true"><span class="zen-segmented__label zen-type-body-base-bold">Sign in</span></button>
+      <button type="button" class="zen-segmented__item" data-size="medium" data-state="default" data-value="signup" data-selected="false" aria-pressed="false"><span class="zen-segmented__label zen-type-body-base-bold">Create account</span></button>
+    </div>
+    <form id="signin-form" class="stack" data-auth="signin">
+      <div class="zen-input-field" data-size="medium" data-state="default">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="signin-email">Email</label></span></span>
+        <div class="zen-input__control"><input id="signin-email" class="zen-input__native zen-type-body-base-medium" name="email" type="email" autocomplete="username" required></div>
+      </div>
+      <div class="zen-input-field" data-size="medium" data-state="default">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="signin-password">Password</label></span></span>
+        <div class="zen-input__control"><input id="signin-password" class="zen-input__native zen-type-body-base-medium" name="password" type="password" autocomplete="current-password" required></div>
+      </div>
+      <div class="error-slot"></div>
+      <button type="submit" class="zen-button" data-size="md" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__label zen-type-button-label-m">Sign in</span></button>
+    </form>
+    <form id="signup-form" class="stack" data-auth="signup" hidden>
+      <div class="zen-input-field" data-size="medium" data-state="default">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="signup-name">Your name</label></span></span>
+        <div class="zen-input__control"><input id="signup-name" class="zen-input__native zen-type-body-base-medium" name="name" autocomplete="name" maxlength="60" required></div>
+      </div>
+      <div class="zen-input-field" data-size="medium" data-state="default">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="signup-email">Email</label></span></span>
+        <div class="zen-input__control"><input id="signup-email" class="zen-input__native zen-type-body-base-medium" name="email" type="email" autocomplete="email" required></div>
+      </div>
+      <div class="zen-input-field" data-size="medium" data-state="default">
+        <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="signup-password">Password</label></span></span>
+        <div class="zen-input__control"><input id="signup-password" class="zen-input__native zen-type-body-base-medium" name="password" type="password" autocomplete="new-password" minlength="8" required></div>
+      </div>
+      <div class="error-slot"></div>
+      <button type="submit" class="zen-button" data-size="md" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__label zen-type-button-label-m">Create account</span></button>
+    </form>
+  </div></div>
+</section>
+
+<div id="workspace" class="workspace" data-open="{{.open}}" hidden>
+  <header class="topbar">
+    <div class="topbar-row">
+      <a class="brand" href="/"><span class="mark" aria-hidden="true"></span><span class="zen-text zen-type-heading-4" data-tone="strongest">{{.site}}</span></a>
+      <div class="account">
+        <button type="button" class="icon-button" id="open-notifications" aria-label="Notifications" hx-get="/app/notifications" hx-target="#panel-body">
+          {{template "icon-mail"}}{{template "notify-count.html" .}}
+        </button>
+        <button type="button" class="zen-button" id="open-profile" data-size="sm" data-appearance="main" data-level="secondary" data-variant="secondary" hx-get="/app/profile" hx-target="#panel-body"><span class="zen-button__label zen-type-button-label-s" id="who">Profile</span></button>
+        <button id="signout" type="button" class="zen-button zen-button--icon-only" data-size="sm" data-appearance="flat" data-level="primary" data-variant="primary" aria-label="Sign out"><span class="zen-button__icon" aria-hidden="true">{{template "icon-log-out"}}</span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="chat" id="chat">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <h1 class="zen-text zen-heading zen-type-heading-3" data-tone="strongest">Messages</h1>
+        <button type="button" class="zen-button" data-size="sm" data-appearance="main" data-level="primary" data-variant="primary" hx-get="/app/conversations/new" hx-target="#pane"><span class="zen-button__icon" aria-hidden="true">{{template "icon-plus"}}</span><span class="zen-button__label zen-type-button-label-s">New</span></button>
+      </div>
+      <div class="error-slot"></div>
+      <nav id="conversations" class="conversation-list" aria-label="Conversations" hx-get="/app/conversations" hx-trigger="signed-in from:body, conversations-changed from:body"></nav>
+    </aside>
+    <section id="pane" class="pane" aria-live="polite">{{template "conversation-pane.html" .}}</section>
+  </div>
+
+  <dialog id="panel" class="panel">
+    <div class="panel-head"><button type="button" class="zen-button zen-button--icon-only" data-size="sm" data-appearance="flat" data-level="primary" data-variant="primary" aria-label="Close" id="close-panel"><span class="zen-button__icon" aria-hidden="true">{{template "icon-arrow-left"}}</span></button></div>
+    <div id="panel-body"></div>
+  </dialog>
+</div>
+{{end}}

@@ -1,0 +1,1 @@
+<span class="notify-count" id="notify-count" hx-target="this" hx-get="/app/notifications/count" hx-trigger="signed-in from:body, notifications-changed from:body" hx-swap="outerHTML">{{if .count}}{{.count}}{{end}}</span>

@@ -1,6 +1,6 @@
 # PocketBase Cloud starters
 
-Seven small, finished sites that run entirely inside PocketBase. Pages are
+Nine small, finished sites that run entirely inside PocketBase. Pages are
 rendered by JavaScript hooks with PocketBase's built-in template engine, made
 interactive with [htmx](https://htmx.org), and styled with the Zen design
 system. There is no separate server, no Node and no build step.
@@ -9,8 +9,10 @@ system. There is no separate server, no Node and no build step.
 | --- | --- | --- |
 | [`blog`](blog) | Blogs, changelogs, docs | Featured post, cover grid, post pages, drafts |
 | [`landing`](landing) | Launches and waitlists | Hero, features, FAQ, waitlist and contact forms |
-| [`store`](store) | Small shops | Catalogue, categories, product pages, Stripe Payment Links |
-| [`booking`](booking) | Appointments | Services, open times, email confirmation, staff schedule |
+| [`store`](store) | Small shops | Catalogue, cart, Stripe Checkout, orders, staff orders page |
+| [`booking`](booking) | Appointments | Services, staff and shifts, open times, email confirmation, staff schedule |
+| [`messaging`](messaging) | Chat in an app or team | Conversations, live messages, unread counts, notifications |
+| [`team`](team) | Team workspaces | Teams, roles, email invites, projects and tasks, activity |
 | [`dashboard`](dashboard) | Internal tools | Staff sign-in, metrics, filterable orders table |
 | [`app`](app) | Apps with accounts | Sign-up, per-user tasks, filters |
 | [`api`](api) | A backend for your own frontend | Owner-only data, protected files, a custom route |

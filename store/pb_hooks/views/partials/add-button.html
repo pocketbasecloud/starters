@@ -1,0 +1,11 @@
+{{if .added}}
+<div class="added" id="add-{{.id}}">
+  <span class="zen-text zen-type-body-base-medium added-note" data-tone="strongest">{{template "icon-check-circle"}}Added to your cart</span>
+  <a class="zen-button buy-button" data-size="lg" data-appearance="main" data-level="primary" data-variant="primary" href="/cart"><span class="zen-button__label zen-type-button-label-l">View cart</span><span class="zen-button__icon" aria-hidden="true">{{template "icon-arrow-right"}}</span></a>
+</div>
+{{else}}
+<button type="button" class="zen-button buy-button" id="add-{{.id}}" data-size="lg" data-appearance="main" data-level="primary" data-variant="primary"
+  hx-post="/cart/items" hx-vals='{"product": "{{.id}}"}' hx-target="this" hx-swap="outerHTML">
+  <span class="zen-button__icon" aria-hidden="true">{{template "icon-bag"}}</span><span class="zen-button__label zen-type-button-label-l">Add to cart</span>
+</button>
+{{end}}

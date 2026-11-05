@@ -1,0 +1,14 @@
+{{range .conversations}}
+<a class="conversation-link{{if .unread}} has-unread{{end}}" href="/c/{{.id}}" data-id="{{.id}}" hx-get="/app/conversations/{{.id}}" hx-target="#pane" hx-push-url="/c/{{.id}}">
+  {{template "avatar.html" .avatar}}
+  <span class="link-text">
+    <span class="link-top"><span class="zen-text zen-type-body-base-bold link-title" data-tone="strongest">{{.title}}</span><time class="zen-text zen-type-caption-regular" data-tone="light">{{.when}}</time></span>
+    <span class="link-bottom"><span class="zen-text zen-type-body-small-regular link-preview" data-tone="base">{{.preview}}</span>{{if .unread}}<span class="unread" aria-label="{{.unread}} unread">{{.unread}}</span>{{end}}</span>
+  </span>
+</a>
+{{else}}
+<div class="list-empty">
+  <p class="zen-text zen-type-body-base-medium" data-tone="strongest">No conversations yet</p>
+  <p class="zen-text zen-type-body-small-regular" data-tone="base">Start one with <strong>New</strong>.</p>
+</div>
+{{end}}

@@ -1,0 +1,32 @@
+<div class="project">
+  <header class="project-head">
+    <div>
+      <h1 class="zen-text zen-heading zen-type-heading-2" data-tone="strongest">{{.name}}</h1>
+      {{if .description}}<p class="zen-text zen-type-body-base-regular" data-tone="base">{{.description}}</p>{{end}}
+    </div>
+    <div class="progress" id="progress" hx-get="/app/projects/{{.id}}/progress" hx-trigger="tasks-changed from:body" hx-target="this" hx-swap="outerHTML">
+      {{template "progress" .}}
+    </div>
+  </header>
+
+  <form class="add-task" hx-post="/app/projects/{{.id}}/tasks" hx-target="#tasks" hx-swap="afterbegin" hx-on::after-request="if (event.detail.successful) this.reset()">
+    <label class="zen-visually-hidden" for="task-title">New task</label>
+    <input id="task-title" class="add-task-input zen-type-body-base-medium" name="title" maxlength="200" placeholder="Add a task and press Enter" autocomplete="off" required>
+    <label class="zen-visually-hidden" for="task-assignee">Assign to</label>
+    <select id="task-assignee" class="assign-select zen-type-body-small-medium" name="assignee">
+      <option value="">Unassigned</option>
+      {{range .members}}<option value="{{.id}}">{{.name}}</option>{{end}}
+    </select>
+    <button type="submit" class="zen-button" data-size="md" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__icon" aria-hidden="true">{{template "icon-plus"}}</span><span class="zen-button__label zen-type-button-label-m">Add</span></button>
+  </form>
+
+  <ul id="tasks" class="tasks">
+    {{range .tasks}}{{template "task.html" .}}{{end}}
+  </ul>
+  <p class="tasks-empty zen-text zen-type-body-base-regular" data-tone="light">No tasks yet. Add the first one above.</p>
+</div>
+
+{{define "progress"}}
+<span class="zen-text zen-type-body-small-medium" data-tone="base">{{.done}} of {{.total}} done</span>
+<span class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{.percent}}" aria-label="Progress"><span style="width: {{.percent}}%"></span></span>
+{{end}}
