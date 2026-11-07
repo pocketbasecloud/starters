@@ -3,6 +3,7 @@
 const STAFF = '@request.auth.collectionName = "staff"';
 const WEEKDAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 const CLOCK = "^([01][0-9]|2[0-3]):[0-5][0-9]$";
+const VISITOR_IP_HEADERS = ["CF-Connecting-IP", "X-Forwarded-For"];
 const FORM_LIMITS = [{ label: "POST /book", maxRequests: 5, duration: 60, audience: "" }];
 
 const SAMPLE_STAFF = [
@@ -16,11 +17,18 @@ const SAMPLE_SERVICES = [
   { name: "Deep-dive session", minutes: 90, price: 15000, sort: 3, description: "Time to work through a larger problem together, step by step.", staff: ["Sam Rivera"] },
 ];
 
+function perVisitorProxy(settings) {
+  const proxy = JSON.parse(JSON.stringify(settings.trustedProxy));
+  return (proxy.headers || []).length > 0 ? proxy : { headers: VISITOR_IP_HEADERS, useLeftmostIP: false };
+}
+
 function setFormLimits(app, keep) {
   const settings = app.settings();
   const limits = JSON.parse(JSON.stringify(settings.rateLimits));
   const kept = (limits.rules || []).filter((rule) => !FORM_LIMITS.some((form) => form.label === rule.label));
-  unmarshal({ rateLimits: { enabled: keep ? true : limits.enabled, rules: keep ? [...kept, ...FORM_LIMITS] : kept } }, settings);
+  const patch = { rateLimits: { enabled: keep ? true : limits.enabled, rules: keep ? [...kept, ...FORM_LIMITS] : kept } };
+  if (keep) patch.trustedProxy = perVisitorProxy(settings);
+  unmarshal(patch, settings);
   app.save(settings);
 }
 

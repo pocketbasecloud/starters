@@ -43,4 +43,6 @@ The booking page is `pb_hooks/views/pages/book.html`, the staff page
 ## Spam protection
 
 The form has a honeypot field and a rate limit of 5 bookings per minute per
-visitor (*Settings → Rate limits*).
+visitor (*Settings → Rate limits*). The limit counts per visitor behind
+PocketBase Cloud's proxy: see *Security* in the starters README for how the
+visitor's address is read.

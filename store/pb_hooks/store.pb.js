@@ -29,5 +29,6 @@ routerAdd("GET", "/thanks", (e) => {
 
 routerAdd("GET", "/thanks/status", (e) => {
   const views = require(`${__hooks}/views.js`);
-  return e.html(200, views.orderStatus(e.request.url.query().get("order")));
+  const query = e.request.url.query();
+  return e.html(200, views.orderStatus(query.get("order"), query.get("attempt")));
 });

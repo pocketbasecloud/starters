@@ -1,16 +1,24 @@
 /// <reference path="../pb_data/types.d.ts" />
 
 const IN_TEAM = "members_via_team.user ?= @request.auth.id";
+const VISITOR_IP_HEADERS = ["CF-Connecting-IP", "X-Forwarded-For"];
 const FORM_LIMITS = [
   { label: "POST /app/teams", maxRequests: 60, duration: 60, audience: "" },
   { label: "POST /app/invite-links", maxRequests: 10, duration: 60, audience: "" },
 ];
 
+function perVisitorProxy(settings) {
+  const proxy = JSON.parse(JSON.stringify(settings.trustedProxy));
+  return (proxy.headers || []).length > 0 ? proxy : { headers: VISITOR_IP_HEADERS, useLeftmostIP: false };
+}
+
 function setFormLimits(app, keep) {
   const settings = app.settings();
   const limits = JSON.parse(JSON.stringify(settings.rateLimits));
   const kept = (limits.rules || []).filter((rule) => !FORM_LIMITS.some((form) => form.label === rule.label));
-  unmarshal({ rateLimits: { enabled: keep ? true : limits.enabled, rules: keep ? [...kept, ...FORM_LIMITS] : kept } }, settings);
+  const patch = { rateLimits: { enabled: keep ? true : limits.enabled, rules: keep ? [...kept, ...FORM_LIMITS] : kept } };
+  if (keep) patch.trustedProxy = perVisitorProxy(settings);
+  unmarshal(patch, settings);
   app.save(settings);
 }
 

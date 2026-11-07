@@ -71,7 +71,11 @@ generated from the Zen design system: regenerate them rather than editing them.
   closed (`null`), and the hooks validate everything they save.
 - Templates escape every value. Only trusted HTML from your own editor fields
   is rendered raw.
-- Public forms carry a hidden honeypot field and a rate limit.
+- Public forms carry a hidden honeypot field and a rate limit, counted per
+  visitor: the first migration trusts `CF-Connecting-IP` and
+  `X-Forwarded-For` for the visitor's address, which is right on PocketBase
+  Cloud and behind any reverse proxy. If you expose PocketBase directly, clear
+  them under *Settings → Trusted proxy*.
 - Staff areas sign in with PocketBase auth; public sign-up is closed there.
 
 ## License

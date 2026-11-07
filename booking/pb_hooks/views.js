@@ -96,10 +96,20 @@ module.exports = {
     if (!name || email.length > 254 || !EMAIL.test(email)) return refusal("Enter your name and a valid email.");
     if (!startIso) return refusal("Pick a time.");
     const config = settings.current();
+    const staffChoice = /^[a-z0-9]{15}$/.test(choice) ? choice : "";
     let booked = null;
+    let unavailable = "";
     $app.runInTransaction((txApp) => {
       const service = availability.activeService(txApp, text(body.service, 15));
-      const slot = availability.freeSlots(txApp, config, service, /^[a-z0-9]{15}$/.test(choice) ? choice : "", text(body.date, 10))
+      if (!service) {
+        unavailable = "That service isn't available. Pick another one.";
+        return;
+      }
+      if (staffChoice && availability.eligibleStaff(txApp, service, staffChoice).length === 0) {
+        unavailable = "That person isn't available for this service. Pick someone else or anyone available.";
+        return;
+      }
+      const slot = availability.freeSlots(txApp, config, service, staffChoice, text(body.date, 10))
         .find((candidate) => candidate.value === startIso);
       if (!slot) return;
       const staffId = slot.staff[0];
@@ -117,6 +127,7 @@ module.exports = {
       txApp.save(booking);
       audit.record(txApp, { actor: email, action: "booking.created", target: `bookings/${booking.id}`, detail: `${service.getString("name")} on ${clock.dayLabel(booked.start, config)} at ${clock.timeLabel(booked.start, config)}` });
     });
+    if (unavailable) return refusal(unavailable, true);
     if (!booked) return refusal("That time was just taken. Pick another one.", true);
     const details = {
       site: siteName(),

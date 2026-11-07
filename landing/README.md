@@ -23,4 +23,6 @@ links you share and the `source` column tells you where people came from.
 Both forms have a hidden honeypot field and a rate limit (5 sign-ups and
 3 messages per minute per visitor, under *Settings → Rate limits*). A repeat
 sign-up gets the same answer as a new one, so the form never reveals who is
-already on the list. Nobody but superusers can read either collection.
+already on the list. Nobody but superusers can read either collection. The
+limit counts per visitor behind PocketBase Cloud's proxy: see *Security* in
+the starters README for how the visitor's address is read.
