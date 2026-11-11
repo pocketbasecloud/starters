@@ -1,8 +1,11 @@
 {{with .order}}
 <section class="order-status" id="order-status"
-  {{if eq .status "pending"}}hx-get="/thanks/status?order={{.id}}" hx-trigger="every 2s" hx-swap="outerHTML"{{end}}>
-  <span class="booked-icon {{if eq .status "pending"}}waiting{{end}}" aria-hidden="true">{{template "icon-check-circle"}}</span>
-  {{if eq .status "pending"}}
+  {{if and (eq .status "pending") (not $.poll.expired)}}hx-get="/thanks/status?order={{.id}}&amp;attempt={{$.poll.next}}" hx-trigger="every 2s" hx-swap="outerHTML"{{end}}>
+  <span class="booked-icon {{if and (eq .status "pending") (not $.poll.expired)}}waiting{{end}}" aria-hidden="true">{{template "icon-check-circle"}}</span>
+  {{if and (eq .status "pending") $.poll.expired}}
+  <h1 class="zen-text zen-heading zen-type-heading-2" data-tone="strongest">We couldn't confirm your payment yet</h1>
+  <p class="zen-text zen-type-body-base-regular" data-tone="base">If you were charged, check your email for a receipt, or contact us.</p>
+  {{else if eq .status "pending"}}
   <h1 class="zen-text zen-heading zen-type-heading-2" data-tone="strongest">Confirming your payment…</h1>
   <p class="zen-text zen-type-body-base-regular" data-tone="base">This takes a few seconds. You can keep this page open.</p>
   {{else if eq .status "cancelled"}}

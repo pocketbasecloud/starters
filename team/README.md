@@ -27,7 +27,9 @@ A team always keeps at least one owner.
 
 An invite is a single-use link that only works for the email it was sent to
 and expires after the configured days. Only a hash of the link's token is
-stored, so the database alone can't be used to join a team.
+stored, so the database alone can't be used to join a team. Inviting the same
+email again replaces the pending invite: the new link works and the old one
+stops working.
 
 ## Security
 

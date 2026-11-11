@@ -24,6 +24,7 @@ const SORTS = {
   "price-asc": ["Price: low to high", "price,name"],
   "price-desc": ["Price: high to low", "-price,name"],
 };
+const STATUS_POLLS = 60;
 const STATUS_TONES = { pending: "neutral", paid: "green", fulfilled: "blue", cancelled: "neutral" };
 
 function siteName() {
@@ -159,6 +160,11 @@ function orderData(order) {
   };
 }
 
+function statusPoll(attempt) {
+  const count = Math.max(0, Math.floor(Number(attempt) || 0));
+  return { next: count + 1, expired: count >= STATUS_POLLS };
+}
+
 function orderById(id) {
   if (!/^[a-z0-9]{15}$/.test(id || "")) return null;
   try {
@@ -242,12 +248,12 @@ module.exports = {
 
   thanks(e, orderId) {
     const order = orderById(orderId);
-    return page(e, "thanks", { title: `Thank you · ${siteName()}` }, { order: order ? orderData(order) : null });
+    return page(e, "thanks", { title: `Thank you · ${siteName()}` }, { order: order ? orderData(order) : null, poll: statusPoll(0) });
   },
 
-  orderStatus(orderId) {
+  orderStatus(orderId, attempt) {
     const order = orderById(orderId);
-    return order ? fragment("order-status", { order: orderData(order) }) : "";
+    return order ? fragment("order-status", { order: orderData(order), poll: statusPoll(attempt) }) : "";
   },
 
   notFound(e) {

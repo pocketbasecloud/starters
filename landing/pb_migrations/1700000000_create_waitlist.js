@@ -1,9 +1,15 @@
 /// <reference path="../pb_data/types.d.ts" />
 
+const VISITOR_IP_HEADERS = ["CF-Connecting-IP", "X-Forwarded-For"];
 const FORM_LIMITS = [
   { label: "POST /waitlist", maxRequests: 5, duration: 60, audience: "" },
   { label: "POST /contact", maxRequests: 3, duration: 60, audience: "" },
 ];
+
+function perVisitorProxy(settings) {
+  const proxy = JSON.parse(JSON.stringify(settings.trustedProxy));
+  return (proxy.headers || []).length > 0 ? proxy : { headers: VISITOR_IP_HEADERS, useLeftmostIP: false };
+}
 
 migrate((app) => {
   const waitlist = new Collection({
@@ -44,7 +50,7 @@ migrate((app) => {
   const settings = app.settings();
   const limits = JSON.parse(JSON.stringify(settings.rateLimits));
   const kept = (limits.rules || []).filter((rule) => !FORM_LIMITS.some((form) => form.label === rule.label));
-  unmarshal({ rateLimits: { enabled: true, rules: [...kept, ...FORM_LIMITS] } }, settings);
+  unmarshal({ rateLimits: { enabled: true, rules: [...kept, ...FORM_LIMITS] }, trustedProxy: perVisitorProxy(settings) }, settings);
   app.save(settings);
 }, (app) => {
   for (const name of ["messages", "waitlist"]) app.delete(app.findCollectionByNameOrId(name));

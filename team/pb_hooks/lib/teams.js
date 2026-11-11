@@ -43,6 +43,14 @@ function isMember(teamId, email) {
   }
 }
 
+function pendingInvite(teamId, email) {
+  try {
+    return $app.findFirstRecordByFilter("invites", "team = {:team} && email = {:email} && accepted = ''", { team: teamId, email });
+  } catch {
+    return new Record($app.findCollectionByNameOrId("invites"));
+  }
+}
+
 function requireManager(member) {
   if (!MANAGERS.includes(member.getString("role"))) throw new ForbiddenError("Only owners and admins can do that.");
 }
@@ -81,7 +89,7 @@ function invite(manager, user, { email, role }) {
   if ($app.countRecords("members", $dbx.hashExp({ team: teamId })) >= config.maxMembers) throw new BadRequestError(`A team can have at most ${config.maxMembers} people.`);
   if (isMember(teamId, address)) throw new BadRequestError("That person is already in the team.");
   const token = $security.randomString(40);
-  const record = new Record($app.findCollectionByNameOrId("invites"));
+  const record = pendingInvite(teamId, address);
   record.set("team", teamId);
   record.set("email", address);
   record.set("role", wanted);
