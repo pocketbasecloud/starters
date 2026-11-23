@@ -1,5 +1,7 @@
 import PocketBase from "/pocketbase.es.mjs";
 
+const htmxReady = new Promise((resolve) => document.addEventListener("DOMContentLoaded", resolve, { once: true }));
+
 const pb = new PocketBase(location.origin);
 const signin = document.querySelector("#signin");
 const workspace = document.querySelector("#workspace");
@@ -45,7 +47,7 @@ function render() {
   signin.hidden = inside;
   workspace.hidden = !inside;
   who.textContent = inside ? pb.authStore.record.email : "";
-  if (inside) htmx.trigger(document.body, "signed-in");
+  if (inside) htmxReady.then(() => htmx.trigger(document.body, "signed-in"));
 }
 
 document.body.addEventListener("htmx:configRequest", (event) => {

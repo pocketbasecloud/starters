@@ -1,5 +1,7 @@
 import PocketBase from "/pocketbase.es.mjs";
 
+const htmxReady = new Promise((resolve) => document.addEventListener("DOMContentLoaded", resolve, { once: true }));
+
 const pb = new PocketBase(location.origin);
 const welcome = document.querySelector("#welcome");
 const workspace = document.querySelector("#workspace");
@@ -98,7 +100,7 @@ function render() {
     unsubscribe();
     return;
   }
-  htmx.trigger(document.body, "signed-in");
+  htmxReady.then(() => htmx.trigger(document.body, "signed-in"));
   subscribe();
   const open = workspace.dataset.open;
   if (open && !currentConversation()) htmx.ajax("GET", `/app/conversations/${open}`, { target: "#pane" });
