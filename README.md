@@ -1,6 +1,6 @@
 # PocketBase Cloud starters
 
-Nine small, finished sites that run entirely inside PocketBase. Pages are
+Ten small, finished sites that run entirely inside PocketBase. Pages are
 rendered by JavaScript hooks with PocketBase's built-in template engine, made
 interactive with [htmx](https://htmx.org), and styled with the Zen design
 system. There is no separate server, no Node and no build step.
@@ -16,6 +16,7 @@ system. There is no separate server, no Node and no build step.
 | [`dashboard`](dashboard) | Internal tools | Staff sign-in, metrics, filterable orders table |
 | [`app`](app) | Apps with accounts | Sign-up, per-user tasks, filters |
 | [`api`](api) | A backend for your own frontend | Owner-only data, protected files, a custom route |
+| [`google-login`](google-login) | Apps that sign in with Google | One Google button, a profile page, a signed-in-only route |
 
 Each folder is one PocketBase:
 

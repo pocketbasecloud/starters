@@ -1,0 +1,22 @@
+[hidden] { display: none !important; }
+.app { min-height: 100vh; background: var(--zen-color-background-canvas-alt); color: var(--zen-color-content-neutral-strongest); }
+.wrap { width: min(44rem, 100% - 2rem); margin-inline: auto; }
+.mark { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--zen-light-brand-9), var(--zen-light-brand-11)); flex: none; }
+
+.auth { min-height: 100vh; display: grid; place-items: center; padding: 1rem; }
+.auth-card { width: min(26rem, 100%); }
+.auth-card .zen-card__content { display: grid; gap: var(--zen-spacing-gap-large, 24px); }
+.auth-heading { display: grid; gap: var(--zen-spacing-gap-xsmall, 8px); }
+.auth-heading h1, .auth-heading p, #not-ready { margin: 0; }
+#google { width: 100%; justify-content: center; }
+.error-slot:empty { display: none; }
+
+.topbar { background: var(--zen-color-background-container); border-bottom: 1px solid var(--zen-color-border-neutral-pale-default); }
+.topbar-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 4rem; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+
+.page { display: grid; gap: var(--zen-spacing-gap-large, 24px); padding-block: var(--zen-spacing-gap-xlarge, 32px); }
+.profile { display: flex; align-items: center; gap: var(--zen-spacing-gap-medium, 16px); }
+.profile .avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }
+.profile-text { display: grid; gap: 4px; min-width: 0; }
+.profile-text h2, .profile-text p { margin: 0; overflow-wrap: anywhere; }
