@@ -35,6 +35,18 @@ const url = pb.files.getURL(note, note.attachments[0], { token });
 const summary = await pb.send("/api/me/summary", {});
 ```
 
+Every call throws a `ClientResponseError` when it fails. Show its message, and
+the message for each field the server refused, next to your form:
+
+```js
+try {
+  await pb.collection("notes").create({ owner: me, title });
+} catch (error) {
+  const fields = error.response?.data ?? {};
+  showError(fields.title?.message ?? error.response?.message ?? "Can't reach the server.");
+}
+```
+
 ## Rules
 
 | Action | Who |
@@ -44,5 +56,5 @@ const summary = await pb.send("/api/me/summary", {});
 | Update | The owner, who cannot hand the note to someone else |
 | Attachments | Protected: need a file token from the owner |
 
-Hooks in `pb_hooks/api.pb.js` show a custom route (`GET /api/me/summary`) and a
-record hook that tidies titles before they are saved.
+Hooks in `pb_hooks/api.pb.js` show a custom route (`GET /api/me/summary`) and
+record hooks that tidy titles before they are saved.

@@ -29,4 +29,7 @@
 @media (max-width: 48rem) {
   .hide-sm { display: none; }
   #who { display: none; }
+  .zen-table__cell, .zen-table__header { padding-inline: 8px; }
+  .compact { min-width: 0; }
+  .zen-table-text__caption { overflow-wrap: anywhere; }
 }

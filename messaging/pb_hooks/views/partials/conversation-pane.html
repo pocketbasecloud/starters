@@ -12,7 +12,8 @@
   <ol id="messages" class="messages">
     {{range .messages}}{{template "message.html" .}}{{else}}<li class="messages-empty zen-text zen-type-body-base-regular" data-tone="light">No messages yet. Say hello.</li>{{end}}
   </ol>
-  <form class="composer" hx-post="/app/conversations/{{.id}}/messages" hx-target="#messages" hx-swap="beforeend" hx-on::after-request="if (event.detail.successful) this.reset()">
+  <div class="error-slot"></div>
+  <form class="composer" hx-disabled-elt="find button[type=submit]" hx-post="/app/conversations/{{.id}}/messages" hx-target="#messages" hx-swap="beforeend" hx-on::after-request="if (event.detail.successful) this.reset()">
     <label class="zen-visually-hidden" for="composer-body">Message</label>
     <textarea id="composer-body" class="composer-input zen-type-body-base-regular" name="body" rows="1" maxlength="4000" placeholder="Write a message" required></textarea>
     <button type="submit" class="zen-button zen-button--icon-only" data-size="md" data-appearance="main" data-level="primary" data-variant="primary" aria-label="Send"><span class="zen-button__icon" aria-hidden="true">{{template "icon-arrow-right"}}</span></button>

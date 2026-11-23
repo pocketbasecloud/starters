@@ -54,6 +54,8 @@
 .details textarea { resize: vertical; }
 #booking-error:empty { display: none; }
 .confirm { width: 100%; justify-content: center; }
+.confirm-busy, .booking-form.htmx-request .confirm-idle { display: none; }
+.booking-form.htmx-request .confirm-busy { display: inline; }
 .trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 
 .booked { display: grid; justify-items: center; text-align: center; gap: var(--zen-spacing-gap-medium, 16px); padding-block: 1.5rem; animation: rise 400ms ease both; }

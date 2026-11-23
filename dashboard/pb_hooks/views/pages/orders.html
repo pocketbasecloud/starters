@@ -59,13 +59,13 @@
         <table class="zen-table__table" aria-label="Orders">
           <thead><tr>
             <th scope="col" class="zen-table__header" data-align="left"><span class="zen-table__head"><span class="zen-table__label zen-type-all-caps-s">Customer</span></span></th>
-            <th scope="col" class="zen-table__header" data-align="left"><span class="zen-table__head"><span class="zen-table__label zen-type-all-caps-s">Status</span></span></th>
+            <th scope="col" class="zen-table__header hide-sm" data-align="left"><span class="zen-table__head"><span class="zen-table__label zen-type-all-caps-s">Status</span></span></th>
             <th scope="col" class="zen-table__header hide-sm" data-align="left"><span class="zen-table__head"><span class="zen-table__label zen-type-all-caps-s">Date</span></span></th>
             <th scope="col" class="zen-table__header" data-align="right"><span class="zen-table__head"><span class="zen-table__label zen-type-all-caps-s">Amount</span></span></th>
             <th scope="col" class="zen-table__header" data-align="right"><span class="zen-table__head"><span class="zen-table__label zen-type-all-caps-s">Update</span></span></th>
           </tr></thead>
           <tbody id="orders" hx-get="/app/orders" hx-include="#filters" hx-disinherit="hx-include"
-            hx-trigger="signed-in from:body, change from:#filters, input changed delay:300ms from:#search"></tbody>
+            hx-trigger="signed-in from:body, change from:#filters, input changed delay:300ms from:#search"><tr class="zen-table__row"><td class="zen-table__cell" colspan="5"><span class="zen-text zen-type-body-base-regular" data-tone="light">Loading orders…</span></td></tr></tbody>
         </table>
       </div>
     </div></div>

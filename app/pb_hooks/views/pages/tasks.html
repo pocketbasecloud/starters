@@ -29,7 +29,8 @@
       </div>
       <div class="zen-input-field" data-size="medium" data-state="default">
         <span class="zen-input-label zen-type-body-small-regular" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="signup-password">Password</label></span></span>
-        <div class="zen-input__control"><input id="signup-password" class="zen-input__native zen-type-body-base-medium" name="password" type="password" autocomplete="new-password" minlength="8" required></div>
+        <div class="zen-input__control"><input id="signup-password" class="zen-input__native zen-type-body-base-medium" name="password" type="password" autocomplete="new-password" minlength="8" required aria-describedby="signup-password-help"></div>
+        <p id="signup-password-help" class="zen-input-help zen-type-body-small-regular"><span class="zen-input-help__content">At least 8 characters.</span></p>
       </div>
       <div class="error-slot"></div>
       <button type="submit" class="zen-button" data-size="md" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__label zen-type-button-label-m">Create account</span></button>
@@ -57,7 +58,7 @@
     <div class="error-slot"></div>
 
     <div class="zen-card" data-tone="shadow" data-spacing="medium"><div class="zen-card__content">
-      <form class="add" hx-post="/app/tasks" hx-swap="none" hx-on::after-request="if (event.detail.successful) this.reset()">
+      <form class="add" hx-post="/app/tasks" hx-swap="none" hx-disabled-elt="find button" hx-on::after-request="if (event.detail.successful) this.reset()">
         <div class="zen-input-field" data-size="medium" data-state="default">
           <span class="zen-input-label zen-type-body-small-regular zen-visually-hidden" data-state="default"><span class="zen-input-label__content"><label class="zen-input-label__text" for="new-task">New task</label></span></span>
           <div class="zen-input__control"><input id="new-task" class="zen-input__native zen-type-body-base-medium" name="title" placeholder="Add a task" maxlength="200" autocomplete="off" required></div>
@@ -73,7 +74,7 @@
         </div>
       </form>
       <ul id="tasks" class="tasks" hx-get="/app/tasks" hx-include="#show" hx-disinherit="hx-include"
-        hx-trigger="signed-in from:body, change from:#show, tasks-changed from:body"></ul>
+        hx-trigger="signed-in from:body, change from:#show, tasks-changed from:body"><li class="task-empty task-loading zen-text zen-type-body-base-regular" data-tone="light">Loading tasks…</li></ul>
     </div></div>
   </main>
 </div>

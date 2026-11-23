@@ -15,8 +15,13 @@
 {{if .next}}
 <li class="more" id="more">
   <button type="button" class="zen-button" data-size="md" data-appearance="main" data-level="secondary" data-variant="secondary"
-    hx-get="/blog/more?page={{.next}}" hx-target="#more" hx-swap="outerHTML">
-    <span class="zen-button__label zen-type-button-label-m">Load more posts</span>
+    hx-get="/blog/more?page={{.next}}" hx-target="#more" hx-swap="outerHTML" hx-disabled-elt="this"
+    hx-on::before-request="this.nextElementSibling.hidden = true"
+    hx-on::response-error="this.nextElementSibling.hidden = false"
+    hx-on::send-error="this.nextElementSibling.hidden = false">
+    <span class="zen-button__label zen-type-button-label-m more-idle">Load more posts</span>
+    <span class="zen-button__label zen-type-button-label-m more-busy">Loading…</span>
   </button>
+  <p class="more-error zen-text zen-type-body-small-regular" data-tone="negative-base" role="alert" hidden>Couldn't load more posts. Check your connection and try again.</p>
 </li>
 {{end}}

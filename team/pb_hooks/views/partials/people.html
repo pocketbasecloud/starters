@@ -17,7 +17,7 @@
   {{end}}
 
   {{if .manager}}
-  <form class="invite-form" hx-post="/app/invite-links" hx-target="#main">
+  <form class="invite-form" hx-post="/app/invite-links" hx-target="#main" hx-disabled-elt="find button[type=submit]">
     <input type="hidden" name="team" value="{{.team}}">
     <label class="zen-visually-hidden" for="invite-email">Email</label>
     <input id="invite-email" class="add-task-input zen-type-body-base-medium" name="email" type="email" placeholder="colleague@company.com" autocomplete="off" required>

@@ -6,6 +6,9 @@ const pb = new PocketBase(location.origin);
 const welcome = document.querySelector("#welcome");
 const workspace = document.querySelector("#workspace");
 const who = document.querySelector("#who");
+const TOO_MANY = "Too many tries. Wait a minute and try again.";
+const OFFLINE = "Can't reach the server. Check your connection and try again.";
+const FIELD_LABELS = { email: "Email", password: "Password", passwordConfirm: "Password" };
 
 function inlineError(message) {
   const box = document.createElement("div");
@@ -51,9 +54,28 @@ function render() {
 }
 
 function messageOf(caught, fallback) {
-  const fields = caught?.response?.data ?? {};
-  const first = Object.values(fields)[0];
-  return first?.message || caught?.response?.message || fallback;
+  if (caught?.status === 0) return OFFLINE;
+  if (caught?.status === 429) return TOO_MANY;
+  const [field, error] = Object.entries(caught?.response?.data ?? {})[0] ?? [];
+  if (field === "email" && error.code === "validation_not_unique") return "An account with that email already exists. Sign in instead.";
+  if (error) return `${FIELD_LABELS[field] ?? field}: ${error.message}`;
+  return caught?.response?.message || fallback;
+}
+
+async function whileBusy(form, work) {
+  const button = form.querySelector("button[type=submit]");
+  button.disabled = true;
+  button.setAttribute("aria-busy", "true");
+  try {
+    await work();
+  } finally {
+    button.disabled = false;
+    button.removeAttribute("aria-busy");
+  }
+}
+
+function undoChange(element) {
+  if (element.type === "checkbox") element.checked = !element.checked;
 }
 
 function select(group, value) {
@@ -97,6 +119,11 @@ document.body.addEventListener("htmx:responseError", (event) => {
     showError("Your session ended. Sign in again.");
     return;
   }
+  undoChange(event.detail.elt);
+  if (event.detail.xhr.status === 429) {
+    showError(TOO_MANY);
+    return;
+  }
   let message = "Something went wrong. Try again.";
   try {
     message = JSON.parse(event.detail.xhr.responseText).message || message;
@@ -104,31 +131,40 @@ document.body.addEventListener("htmx:responseError", (event) => {
   showError(message);
 });
 
+document.body.addEventListener("htmx:sendError", (event) => {
+  undoChange(event.detail.elt);
+  showError(OFFLINE);
+});
+
 document.querySelector("#signup-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = new FormData(event.target);
   const email = form.get("email");
   const password = form.get("password");
-  try {
-    await pb.collection("users").create({ email, password, passwordConfirm: password });
-    await pb.collection("users").authWithPassword(email, password);
-    showError("");
-    render();
-  } catch (caught) {
-    showError(messageOf(caught, "Could not create the account."));
-  }
+  await whileBusy(event.target, async () => {
+    try {
+      await pb.collection("users").create({ email, password, passwordConfirm: password });
+      await pb.collection("users").authWithPassword(email, password);
+      showError("");
+      render();
+    } catch (caught) {
+      showError(messageOf(caught, "Could not create the account."));
+    }
+  });
 });
 
 document.querySelector("#signin-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = new FormData(event.target);
-  try {
-    await pb.collection("users").authWithPassword(form.get("email"), form.get("password"));
-    showError("");
-    render();
-  } catch {
-    showError("Wrong email or password.");
-  }
+  await whileBusy(event.target, async () => {
+    try {
+      await pb.collection("users").authWithPassword(form.get("email"), form.get("password"));
+      showError("");
+      render();
+    } catch (caught) {
+      showError(caught?.status === 400 ? "Wrong email or password." : messageOf(caught, "Could not sign in. Try again."));
+    }
+  });
 });
 
 document.querySelector("#signout").addEventListener("click", () => {

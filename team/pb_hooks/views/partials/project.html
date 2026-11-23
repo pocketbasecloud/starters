@@ -9,7 +9,7 @@
     </div>
   </header>
 
-  <form class="add-task" hx-post="/app/projects/{{.id}}/tasks" hx-target="#tasks" hx-swap="afterbegin" hx-on::after-request="if (event.detail.successful) this.reset()">
+  <form class="add-task" hx-disabled-elt="find button[type=submit]" hx-post="/app/projects/{{.id}}/tasks" hx-target="#tasks" hx-swap="afterbegin" hx-on::after-request="if (event.detail.successful) this.reset()">
     <label class="zen-visually-hidden" for="task-title">New task</label>
     <input id="task-title" class="add-task-input zen-type-body-base-medium" name="title" maxlength="200" placeholder="Add a task and press Enter" autocomplete="off" required>
     <label class="zen-visually-hidden" for="task-assignee">Assign to</label>

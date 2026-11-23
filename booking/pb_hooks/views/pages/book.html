@@ -1,6 +1,10 @@
-{{define "head"}}<meta name="description" content="Pick a service and a time that suits you.">{{end}}
+{{define "head"}}
+<meta name="description" content="Pick a service and a time that suits you.">
+<script type="module" src="/book.js"></script>
+{{end}}
 
 {{define "content"}}
+<template id="alert-icon">{{template "icon-alert"}}</template>
 <header class="topbar">
   <div class="wrap topbar-row">
     <a class="brand" href="/"><span class="mark" aria-hidden="true"></span><span class="zen-text zen-type-heading-4" data-tone="strongest">{{.site}}</span></a>
@@ -21,7 +25,7 @@
 
   <div class="zen-card booking-card" data-tone="shadow" data-spacing="large" id="booking-panel"><div class="zen-card__content">
     {{if .services}}
-    <form id="booking" class="booking-form" hx-post="/book" hx-target="#booking-panel" hx-swap="innerHTML">
+    <form id="booking" class="booking-form" novalidate hx-post="/book" hx-target="#booking-panel" hx-swap="innerHTML" hx-disabled-elt="find .confirm">
       <fieldset class="step">
         <legend class="step-title"><span class="step-number zen-type-body-small-bold" aria-hidden="true">1</span><span class="zen-text zen-type-body-extra-bold" data-tone="strongest">Choose a service</span></legend>
         <div class="services">
@@ -95,7 +99,7 @@
           </div>
           <div class="trap" aria-hidden="true"><label>Leave this empty <input name="website" tabindex="-1" autocomplete="off"></label></div>
           <div id="booking-error"></div>
-          <button type="submit" class="zen-button confirm" data-size="lg" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__label zen-type-button-label-l">Confirm booking</span></button>
+          <button type="submit" class="zen-button confirm" data-size="lg" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__label zen-type-button-label-l confirm-idle">Confirm booking</span><span class="zen-button__label zen-type-button-label-l confirm-busy">Booking…</span></button>
         </div>
       </fieldset>
     </form>

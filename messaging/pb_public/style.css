@@ -14,7 +14,7 @@
 .auth .stack .zen-button { width: 100%; justify-content: center; }
 .error-slot:empty { display: none; }
 .error-slot { padding: 0 16px 12px; }
-.auth .error-slot { padding: 0; }
+.auth .error-slot, form .error-slot { padding: 0; }
 
 .workspace { height: 100vh; height: 100dvh; display: grid; grid-template-rows: auto 1fr; }
 .topbar { background: var(--zen-color-background-container); border-bottom: 1px solid var(--zen-color-border-neutral-pale-default); }

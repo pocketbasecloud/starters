@@ -13,3 +13,8 @@ onRecordCreateRequest((e) => {
   e.record.set("title", e.record.getString("title").trim());
   e.next();
 }, "notes");
+
+onRecordUpdateRequest((e) => {
+  e.record.set("title", e.record.getString("title").trim());
+  e.next();
+}, "notes");

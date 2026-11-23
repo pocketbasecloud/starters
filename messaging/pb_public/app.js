@@ -31,8 +31,17 @@ function inlineError(message) {
   return box;
 }
 
-function showError(message) {
-  for (const slot of document.querySelectorAll(".error-slot")) {
+const OFFLINE = "Can't reach the server. Check your connection and try again.";
+const TOO_MANY = "Too many tries. Wait a minute and try again.";
+const FIELD_LABELS = { email: "Email", password: "Password", passwordConfirm: "Password", name: "Name" };
+
+function slotsNear(element) {
+  const own = element?.closest("form")?.querySelector(".error-slot") || element?.closest(".conversation")?.querySelector(".error-slot");
+  return own ? [own] : document.querySelectorAll(".error-slot");
+}
+
+function showError(message, element) {
+  for (const slot of slotsNear(element)) {
     slot.replaceChildren(...(message ? [inlineError(message)] : []));
   }
 }
@@ -107,9 +116,24 @@ function render() {
 }
 
 function messageOf(caught, fallback) {
-  const fields = caught?.response?.data ?? {};
-  const first = Object.values(fields)[0];
-  return first?.message || caught?.response?.message || fallback;
+  if (caught?.status === 0) return OFFLINE;
+  if (caught?.status === 429) return TOO_MANY;
+  const [field, error] = Object.entries(caught?.response?.data ?? {})[0] ?? [];
+  if (field === "email" && error.code === "validation_not_unique") return "An account with this email already exists. Sign in instead.";
+  if (error?.message) return `${FIELD_LABELS[field] || field}: ${error.message}`;
+  return caught?.response?.message || fallback;
+}
+
+async function whileBusy(form, work) {
+  const button = form.querySelector("button[type=submit]");
+  button.disabled = true;
+  button.setAttribute("aria-busy", "true");
+  try {
+    await work();
+  } finally {
+    button.disabled = false;
+    button.removeAttribute("aria-busy");
+  }
 }
 
 function select(group, value) {
@@ -149,38 +173,48 @@ document.body.addEventListener("htmx:responseError", (event) => {
     showError("Your session ended. Sign in again.");
     return;
   }
+  if (event.detail.xhr.status === 429) {
+    showError(TOO_MANY, event.detail.elt);
+    return;
+  }
   let message = "Something went wrong. Try again.";
   try {
     message = JSON.parse(event.detail.xhr.responseText).message || message;
   } catch {}
-  showError(message);
+  showError(message, event.detail.elt);
 });
+
+document.body.addEventListener("htmx:sendError", (event) => showError(OFFLINE, event.detail.elt));
 
 document.querySelector("#signup-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = new FormData(event.target);
   const email = form.get("email");
   const password = form.get("password");
-  try {
-    await pb.collection("users").create({ email, password, passwordConfirm: password, name: form.get("name") });
-    await pb.collection("users").authWithPassword(email, password);
-    showError("");
-    render();
-  } catch (caught) {
-    showError(messageOf(caught, "Could not create the account."));
-  }
+  await whileBusy(event.target, async () => {
+    try {
+      await pb.collection("users").create({ email, password, passwordConfirm: password, name: form.get("name") });
+      await pb.collection("users").authWithPassword(email, password);
+      showError("");
+      render();
+    } catch (caught) {
+      showError(messageOf(caught, "Could not create the account."));
+    }
+  });
 });
 
 document.querySelector("#signin-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = new FormData(event.target);
-  try {
-    await pb.collection("users").authWithPassword(form.get("email"), form.get("password"));
-    showError("");
-    render();
-  } catch {
-    showError("Wrong email or password.");
-  }
+  await whileBusy(event.target, async () => {
+    try {
+      await pb.collection("users").authWithPassword(form.get("email"), form.get("password"));
+      showError("");
+      render();
+    } catch (caught) {
+      showError(caught?.status === 400 ? "Wrong email or password." : messageOf(caught, "Couldn't sign in. Try again."));
+    }
+  });
 });
 
 document.querySelector("#signout").addEventListener("click", () => {

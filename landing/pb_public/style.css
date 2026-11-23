@@ -25,6 +25,9 @@ html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
 .fineprint { margin: 0; text-align: center; }
 .joined { animation: rise 400ms ease both; }
 .trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.error-slot:empty { display: none; }
+.send-busy, .htmx-request .send-idle { display: none; }
+.htmx-request .send-busy { display: inline; }
 
 .proof { display: inline-flex; align-items: center; gap: 10px; margin: 0; }
 .avatars { display: inline-flex; }

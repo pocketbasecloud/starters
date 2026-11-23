@@ -11,7 +11,7 @@
         {{if .notes}}<span class="zen-text zen-type-body-small-regular agenda-notes" data-tone="base">{{.notes}}</span>{{end}}
       </span>
       <button type="button" class="zen-button" data-size="sm" data-appearance="main" data-level="secondary" data-variant="secondary"
-        hx-patch="/staff/bookings/{{.id}}/cancel" hx-confirm="Cancel this booking with {{.name}}?" hx-swap="none"><span class="zen-button__label zen-type-button-label-s">Cancel</span></button>
+        hx-patch="/staff/bookings/{{.id}}/cancel" hx-confirm="Cancel this booking with {{.name}}?" hx-swap="none" hx-disabled-elt="this"><span class="zen-button__label zen-type-button-label-s">Cancel</span></button>
     </div></li>
     {{end}}
   </ul>

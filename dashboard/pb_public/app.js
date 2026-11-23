@@ -7,6 +7,8 @@ const signin = document.querySelector("#signin");
 const dashboard = document.querySelector("#dashboard");
 const who = document.querySelector("#who");
 const status = document.querySelector("#status");
+const TOO_MANY = "Too many tries. Wait a minute and try again.";
+const OFFLINE = "Can't reach the server. Check your connection and try again.";
 
 function inlineError(message) {
   const box = document.createElement("div");
@@ -39,6 +41,18 @@ function showError(message) {
   }
 }
 
+function signInFailure(caught) {
+  if (caught?.status === 0) return OFFLINE;
+  if (caught?.status === 429) return TOO_MANY;
+  if (caught?.status === 400) return "That email and password don't match a staff account.";
+  return caught?.response?.message || "Could not sign in. Try again.";
+}
+
+function undoChange(element) {
+  if (element.tagName !== "SELECT") return;
+  element.value = [...element.options].find((option) => option.defaultSelected)?.value ?? element.value;
+}
+
 function signedIn() {
   return pb.authStore.isValid && pb.authStore.record?.collectionName === "users";
 }
@@ -66,11 +80,21 @@ document.body.addEventListener("htmx:responseError", (event) => {
     showError("Your session ended. Sign in again.");
     return;
   }
+  undoChange(event.detail.elt);
+  if (event.detail.xhr.status === 429) {
+    showError(TOO_MANY);
+    return;
+  }
   let message = "Something went wrong. Try again.";
   try {
     message = JSON.parse(event.detail.xhr.responseText).message || message;
   } catch {}
   showError(message);
+});
+
+document.body.addEventListener("htmx:sendError", (event) => {
+  undoChange(event.detail.elt);
+  showError(OFFLINE);
 });
 
 for (const item of document.querySelectorAll(".zen-segmented__item")) {
@@ -88,12 +112,18 @@ for (const item of document.querySelectorAll(".zen-segmented__item")) {
 document.querySelector("#signin-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = new FormData(event.target);
+  const button = event.target.querySelector("button[type=submit]");
+  button.disabled = true;
+  button.setAttribute("aria-busy", "true");
   try {
     await pb.collection("users").authWithPassword(form.get("email"), form.get("password"));
     showError("");
     render();
-  } catch {
-    showError("That email and password don't match a staff account.");
+  } catch (caught) {
+    showError(signInFailure(caught));
+  } finally {
+    button.disabled = false;
+    button.removeAttribute("aria-busy");
   }
 });
 

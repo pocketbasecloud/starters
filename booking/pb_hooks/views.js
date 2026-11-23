@@ -93,8 +93,9 @@ module.exports = {
     const startIso = text(body.time, 40);
     const choice = text(body.staff, 15);
     const isBot = text(body.website, 200) !== "";
-    if (!name || email.length > 254 || !EMAIL.test(email)) return refusal("Enter your name and a valid email.");
-    if (!startIso) return refusal("Pick a time.");
+    if (!startIso) return refusal("Pick a time first.");
+    if (!name) return refusal("Enter your name.");
+    if (email.length > 254 || !EMAIL.test(email)) return refusal("Enter a valid email, like name@example.com.");
     const config = settings.current();
     const staffChoice = /^[a-z0-9]{15}$/.test(choice) ? choice : "";
     let booked = null;

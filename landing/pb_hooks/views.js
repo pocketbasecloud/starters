@@ -35,6 +35,19 @@ function validEmail(email) {
   return email.length <= 254 && EMAIL.test(email);
 }
 
+function listed(parts) {
+  return parts.length < 2 ? parts.join("") : `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`;
+}
+
+function onWaitlist(email) {
+  try {
+    $app.findFirstRecordByData("waitlist", "email", email);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function isBot(body) {
   return text(body.website, 200) !== "";
 }
@@ -62,18 +75,15 @@ module.exports = {
     if (!validEmail(email)) {
       return { ok: false, html: fragment("waitlist-form", { email, source, error: negative("Enter a valid email address.") }) };
     }
-    if (!isBot(body)) {
+    if (!isBot(body) && !onWaitlist(email)) {
+      const entry = new Record($app.findCollectionByNameOrId("waitlist"));
+      entry.set("email", email);
+      entry.set("source", source);
       try {
-        $app.findFirstRecordByData("waitlist", "email", email);
-      } catch {
-        const entry = new Record($app.findCollectionByNameOrId("waitlist"));
-        entry.set("email", email);
-        entry.set("source", source);
-        try {
-          $app.save(entry);
-        } catch (error) {
-          $app.logger().warn("waitlist save failed", "error", String(error));
-        }
+        $app.save(entry);
+      } catch (error) {
+        $app.logger().warn("waitlist save failed", "error", String(error));
+        if (!onWaitlist(email)) return { ok: false, html: fragment("waitlist-form", { email, source, error: negative("We couldn't add you right now. Try again in a minute.") }) };
       }
     }
     return { ok: true, html: fragment("waitlist-joined", { message: positive(`You're on the list. We'll email ${email} when your spot opens.`) }) };
@@ -81,12 +91,10 @@ module.exports = {
 
   contact(body) {
     const values = { name: text(body.name, 100), email: text(body.email, 300).toLowerCase(), message: text(body.message, 5000) };
-    const errors = {};
-    if (!values.name) errors.name = true;
-    if (!validEmail(values.email)) errors.email = true;
-    if (!values.message) errors.message = true;
-    if (Object.keys(errors).length > 0) {
-      return { ok: false, html: fragment("contact-form", { ...values, errors, error: negative("Fill in your name, a valid email and a message.") }) };
+    const errors = { name: !values.name, email: !validEmail(values.email), message: !values.message };
+    const missing = [errors.name && "your name", errors.email && "a valid email", errors.message && "a message"].filter(Boolean);
+    if (missing.length > 0) {
+      return { ok: false, html: fragment("contact-form", { ...values, errors, error: negative(`Enter ${listed(missing)}.`) }) };
     }
     if (!isBot(body)) {
       const entry = new Record($app.findCollectionByNameOrId("messages"));

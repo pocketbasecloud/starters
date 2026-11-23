@@ -1,4 +1,5 @@
 import PocketBase from "/pocketbase.es.mjs";
+import { inlineError, OFFLINE, requestFailure, TOO_MANY } from "/messages.js";
 
 const htmxReady = new Promise((resolve) => document.addEventListener("DOMContentLoaded", resolve, { once: true }));
 
@@ -7,35 +8,17 @@ const signin = document.querySelector("#signin");
 const workspace = document.querySelector("#workspace");
 const who = document.querySelector("#who");
 
-function inlineError(message) {
-  const box = document.createElement("div");
-  box.className = "zen-inline-message";
-  box.dataset.tone = "negative";
-  box.setAttribute("role", "alert");
-  const container = document.createElement("div");
-  container.className = "zen-inline-message__container";
-  const icon = document.createElement("span");
-  icon.className = "zen-inline-message__icon";
-  icon.setAttribute("aria-hidden", "true");
-  icon.append(document.querySelector("#alert-icon").content.cloneNode(true));
-  const content = document.createElement("div");
-  content.className = "zen-inline-message__content";
-  const text = document.createElement("div");
-  text.className = "zen-inline-message__text";
-  const caption = document.createElement("span");
-  caption.className = "zen-inline-message__caption zen-type-body-small-regular";
-  caption.textContent = message;
-  text.append(caption);
-  content.append(text);
-  container.append(icon, content);
-  box.append(container);
-  return box;
-}
-
 function showError(message) {
   for (const slot of document.querySelectorAll(".error-slot")) {
     slot.replaceChildren(...(message ? [inlineError(message)] : []));
   }
+}
+
+function signInFailure(error) {
+  if (error.status === 0) return OFFLINE;
+  if (error.status === 429) return TOO_MANY;
+  if (error.status === 400) return "That email and password don't match a staff account.";
+  return error.response?.message || "Couldn't sign in. Try again.";
 }
 
 function signedIn() {
@@ -65,22 +48,26 @@ document.body.addEventListener("htmx:responseError", (event) => {
     showError("Your session ended. Sign in again.");
     return;
   }
-  let message = "Something went wrong. Try again.";
-  try {
-    message = JSON.parse(event.detail.xhr.responseText).message || message;
-  } catch {}
-  showError(message);
+  showError(requestFailure(event.detail.xhr));
 });
+
+document.body.addEventListener("htmx:sendError", () => showError(OFFLINE));
 
 document.querySelector("#signin-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = new FormData(event.target);
+  const button = event.target.querySelector("button[type=submit]");
+  button.disabled = true;
+  button.setAttribute("aria-busy", "true");
   try {
     await pb.collection("staff").authWithPassword(form.get("email"), form.get("password"));
     showError("");
     render();
-  } catch {
-    showError("That email and password don't match a staff account.");
+  } catch (error) {
+    showError(signInFailure(error));
+  } finally {
+    button.disabled = false;
+    button.removeAttribute("aria-busy");
   }
 });
 

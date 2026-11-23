@@ -5,8 +5,8 @@
       <span class="zen-checkbox__content"><span class="zen-checkbox__label zen-type-body-base-regular">{{.title}}</span></span>
     </span>
     <input type="checkbox" aria-label="Done: {{.title}}" {{if .done}}checked{{end}}
-      hx-patch="/app/tasks/{{.id}}" hx-target="#task-{{.id}}" hx-swap="outerHTML">
+      hx-patch="/app/tasks/{{.id}}" hx-target="#task-{{.id}}" hx-swap="outerHTML" hx-disabled-elt="this">
   </label>
   <button type="button" class="zen-button zen-button--icon-only delete" data-size="sm" data-appearance="flat" data-level="primary" data-variant="primary" aria-label="Delete {{.title}}"
-    hx-delete="/app/tasks/{{.id}}" hx-target="#task-{{.id}}" hx-swap="outerHTML"><span class="zen-button__icon" aria-hidden="true">{{template "icon-trash"}}</span></button>
+    hx-delete="/app/tasks/{{.id}}" hx-target="#task-{{.id}}" hx-swap="outerHTML" hx-disabled-elt="this"><span class="zen-button__icon" aria-hidden="true">{{template "icon-trash"}}</span></button>
 </li>

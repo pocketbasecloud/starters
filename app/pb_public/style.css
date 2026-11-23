@@ -30,6 +30,7 @@
 .task .delete { opacity: 0.55; }
 .task:hover .delete, .task .delete:focus-visible { opacity: 1; }
 .task-empty { list-style: none; border-top: 1px solid var(--zen-color-border-neutral-pale-default); }
+.task-loading { padding-block: 16px; }
 
 @media (max-width: 40rem) {
   #who { display: none; }

@@ -11,7 +11,10 @@
   <link rel="stylesheet" href="/style.css">
   <meta name="htmx-config" content='{"responseHandling":[{"code":"204","swap":false},{"code":"[23]..","swap":true},{"code":"422","swap":true},{"code":"502","swap":true},{"code":"[45]..","swap":false,"error":true}]}'>
   <script src="/htmx.min.js"></script>
-  {{block "head" .}}{{end}}
+  {{block "head" .}}
+  <template id="alert-icon">{{template "icon-alert"}}</template>
+  <script type="module" src="/shop.js"></script>
+  {{end}}
 </head>
 <body>
   <div class="zen-provider site" data-paint="true" data-component-theme="brand-s1">

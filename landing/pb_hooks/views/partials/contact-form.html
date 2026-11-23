@@ -1,4 +1,4 @@
-<form class="zen-card contact-card" data-tone="shadow" data-spacing="large" id="contact-form" hx-post="/contact" hx-swap="outerHTML">
+<form class="zen-card contact-card" data-tone="shadow" data-spacing="large" id="contact-form" hx-post="/contact" hx-swap="outerHTML" hx-disabled-elt="find button">
   <div class="zen-card__content contact-form">
     <div class="contact-row">
       <div class="zen-input-field" data-size="large" data-state="{{if .errors.name}}error{{else}}default{{end}}">
@@ -16,6 +16,7 @@
     </div>
     {{template "honeypot.html"}}
     {{if .error}}{{template "message.html" .error}}{{end}}
-    <div><button type="submit" class="zen-button" data-size="lg" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__label zen-type-button-label-l">Send message</span></button></div>
+    <div class="error-slot"></div>
+    <div><button type="submit" class="zen-button" data-size="lg" data-appearance="main" data-level="primary" data-variant="primary"><span class="zen-button__label zen-type-button-label-l send-idle">Send message</span><span class="zen-button__label zen-type-button-label-l send-busy">Sending…</span></button></div>
   </div>
 </form>

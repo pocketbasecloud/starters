@@ -9,13 +9,13 @@
         <span class="zen-text zen-type-body-small-regular" data-tone="light">{{.price}} each</span>
       </div>
       <label class="cart-quantity"><span class="zen-visually-hidden">Quantity of {{.name}}</span>
-        <select class="sort-select zen-type-body-base-medium" name="quantity" hx-patch="/cart/items/{{.id}}" hx-target="#cart" hx-swap="outerHTML">
+        <select class="sort-select zen-type-body-base-medium" name="quantity" hx-patch="/cart/items/{{.id}}" hx-target="#cart" hx-swap="outerHTML" hx-disabled-elt="this">
           {{range .options}}<option value="{{.value}}" {{if .selected}}selected{{end}}>{{.value}}</option>{{end}}
         </select>
       </label>
       <span class="zen-text zen-type-body-base-medium cart-total" data-tone="strongest">{{.lineTotal}}</span>
       <button type="button" class="zen-button zen-button--icon-only" data-size="sm" data-appearance="flat" data-level="primary" data-variant="primary" aria-label="Remove {{.name}}"
-        hx-patch="/cart/items/{{.id}}" hx-vals='{"quantity": "0"}' hx-target="#cart" hx-swap="outerHTML"><span class="zen-button__icon" aria-hidden="true">{{template "icon-trash"}}</span></button>
+        hx-patch="/cart/items/{{.id}}" hx-vals='{"quantity": "0"}' hx-target="#cart" hx-swap="outerHTML" hx-disabled-elt="this"><span class="zen-button__icon" aria-hidden="true">{{template "icon-trash"}}</span></button>
     </li>
     {{end}}
   </ul>

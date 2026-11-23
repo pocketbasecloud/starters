@@ -5,7 +5,7 @@
 </div>
 {{else}}
 <button type="button" class="zen-button buy-button" id="add-{{.id}}" data-size="lg" data-appearance="main" data-level="primary" data-variant="primary"
-  hx-post="/cart/items" hx-vals='{"product": "{{.id}}"}' hx-target="this" hx-swap="outerHTML">
+  hx-post="/cart/items" hx-vals='{"product": "{{.id}}"}' hx-target="this" hx-swap="outerHTML" hx-disabled-elt="this">
   <span class="zen-button__icon" aria-hidden="true">{{template "icon-bag"}}</span><span class="zen-button__label zen-type-button-label-l">Add to cart</span>
 </button>
 {{end}}
